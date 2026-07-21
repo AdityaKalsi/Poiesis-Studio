@@ -1,0 +1,276 @@
+{
+  "script_text": "INT. KITCHEN - NIGHT\n\nSARAH (30s, exhausted) stares at a letter on the table. She pours whiskey\ninto a chipped mug, hands trembling. Headlights sweep across the window --\nsomeone's outside.\n\nSarah quickly folds the letter and shoves it into her coat pocket. She\nopens a drawer, pulls out an old revolver, and sets it on the counter\nwithin reach.\n\nINT. KITCHEN - CONTINUOUS\n\nThe front door creaks open. MARCUS (40s, soaked from rain) steps into the\nhallway, calling out.\n\nMARCUS\nSarah? It's me.\n\nSarah's hand hovers near the revolver. She recognizes his voice and\nrelaxes, but only slightly. She slides the gun back into the drawer\nbefore he enters the kitchen.\n\nMARCUS (CONT'D)\n(seeing her face)\nWhat happened?\n\nSARAH\nNothing happened. Where were you?\n\nMarcus doesn't answer. He notices the whiskey, the trembling hands, the\noutline of the letter in her pocket. A long beat of silence between them.\n",
+  "breakdown": {
+    "title": "Script Breakdown",
+    "scenes": [
+      {
+        "scene_number": 1,
+        "heading": "INT. KITCHEN - NIGHT",
+        "synopsis": "Sarah, exhausted and visibly shaken, pours whiskey into a chipped mug while hiding a letter in her coat pocket. She prepares an old revolver for potential danger.",
+        "cast": [
+          "SARAH",
+          "MARCUS"
+        ],
+        "props": [
+          "letter on the table",
+          "chipped mug",
+          "whiskey",
+          "old revolver",
+          "drawer"
+        ],
+        "locations": [
+          "KITCHEN"
+        ],
+        "wardrobe_notes": [
+          "Sarah is exhausted and possibly wearing a coat with a pocket for hiding the letter."
+        ],
+        "vfx_or_sfx": [],
+        "stunts": [],
+        "special_equipment": [],
+        "sound_notes": []
+      },
+      {
+        "scene_number": 2,
+        "heading": "INT. KITCHEN - CONTINUOUS",
+        "synopsis": "Marcus, soaked from rain, enters the kitchen and notices Sarah's nervous behavior and hidden letter. They exchange a tense silence.",
+        "cast": [
+          "SARAH",
+          "MARCUS"
+        ],
+        "props": [
+          "front door creaking open",
+          "drawer with revolver",
+          "whiskey",
+          "letter in Sarah's pocket"
+        ],
+        "locations": [
+          "KITCHEN"
+        ],
+        "wardrobe_notes": [],
+        "vfx_or_sfx": [],
+        "stunts": [],
+        "special_equipment": [],
+        "sound_notes": []
+      }
+    ]
+  },
+  "intent_briefs": [
+    {
+      "scene_number": 1,
+      "purpose": "Establish Sarah's current state of mind and her preparedness for danger.",
+      "emotional_objective": "Make the audience feel a sense of impending tension and worry about Sarah’s safety.",
+      "visual_objective": "A close-up shot of Sarah's trembling hand as she pours whiskey into the chipped mug, with the letter partially visible in her coat pocket, creating an atmosphere of hidden secrets.",
+      "character_objectives": {
+        "Sarah": "To hide a letter that may reveal something dangerous or incriminating and to prepare for potential danger. She accomplishes this by pouring whiskey and preparing the revolver, both actions suggesting she is wary and prepared."
+      },
+      "tone": "Tense"
+    },
+    {
+      "scene_number": 2,
+      "purpose": "To establish the underlying tension between Marcus and Sarah and hint at a potential threat or secret.",
+      "emotional_objective": "The audience should feel a sense of unease and curiosity about what hidden secrets might be revealed.",
+      "visual_objective": "A close-up of Sarah's hands trembling as she hides the letter, with a reflection of her face in a nearby glass door, showing conflicting emotions.",
+      "character_objectives": {
+        "Sarah": "To hide the letter from Marcus and maintain control. Tactic: Quickly place the letter in a drawer and act casually to mask nervousness.",
+        "Marcus": "To notice Sarah's unusual behavior and inquire about it. Tactic: Approach her with concern, asking if she is okay after seeing her nervous reaction."
+      },
+      "tone": "Tense"
+    }
+  ],
+  "shot_lists": [
+    {
+      "scene_number": 1,
+      "shots": [
+        {
+          "shot_number": "S01-Wide",
+          "shot_type": "wide",
+          "lens_mm": null,
+          "description": "Establish the setting of the kitchen, showing the dim lighting and cluttered environment. This shot sets up the atmosphere and provides context for Sarah's actions.",
+          "movement": null,
+          "narrative_purpose": "Geography"
+        },
+        {
+          "shot_number": "S02-Medium Wide",
+          "shot_type": "medium",
+          "lens_mm": null,
+          "description": "Show Sarah standing at the kitchen counter, with her back to us. She reaches into her coat pocket and pulls out a letter, then quickly hides it again.",
+          "movement": null,
+          "narrative_purpose": "Character Objective - Hiding the letter"
+        },
+        {
+          "shot_number": "S03-Medium",
+          "shot_type": "medium",
+          "lens_mm": null,
+          "description": "Close-up of Sarah's face as she pours whiskey into a chipped mug. Her eyes are focused, and there is a slight tremor in her hand.",
+          "movement": null,
+          "narrative_purpose": "Emotional Objective - Tension and worry"
+        },
+        {
+          "shot_number": "S04-Close-Up",
+          "shot_type": "close_up",
+          "lens_mm": null,
+          "description": "Close-up of Sarah's trembling hand as she pours the whiskey, with a hint of the letter visible in her coat pocket through the fabric.",
+          "movement": null,
+          "narrative_purpose": "Visual Objective - Hidden secrets"
+        },
+        {
+          "shot_number": "S05-Medium Close-Up",
+          "shot_type": "medium",
+          "lens_mm": null,
+          "description": "Sarah picks up an old revolver from a drawer and begins to prepare it. Her movements are deliberate but cautious.",
+          "movement": null,
+          "narrative_purpose": "Character Objective - Preparing for potential danger"
+        },
+        {
+          "shot_number": "S06-Close-Up",
+          "shot_type": "close_up",
+          "lens_mm": null,
+          "description": "Close-up of the revolver as Sarah checks and readies it. The tension in her hand is palpable.",
+          "movement": null,
+          "narrative_purpose": "Emotional Objective - Tension"
+        }
+      ]
+    },
+    {
+      "scene_number": 2,
+      "shots": [
+        {
+          "shot_number": "S01",
+          "shot_type": "wide",
+          "lens_mm": null,
+          "description": "A wide shot of the kitchen, showing Marcus entering from outside. The raindrops on his coat and the wet floor indicate he has just come in.",
+          "movement": null,
+          "narrative_purpose": "Geography/scale"
+        },
+        {
+          "shot_number": "S02",
+          "shot_type": "medium",
+          "lens_mm": null,
+          "description": "Marcus approaches Sarah, who is standing by the kitchen counter. She looks up and immediately starts fidgeting with her hands.",
+          "movement": null,
+          "narrative_purpose": "Default conversational"
+        },
+        {
+          "shot_number": "S03",
+          "shot_type": "close_up",
+          "lens_mm": null,
+          "description": "Close-up of Sarah's hands trembling as she quickly hides the letter in a drawer. Her face is partially obscured by her hands, hinting at her nervousness.",
+          "movement": null,
+          "narrative_purpose": "Character objective: Sarah"
+        },
+        {
+          "shot_number": "S04",
+          "shot_type": "medium",
+          "lens_mm": null,
+          "description": "Marcus takes a step closer to Sarah and leans in slightly. His concerned expression is visible, with a hint of suspicion.",
+          "movement": null,
+          "narrative_purpose": "Character objective: Marcus"
+        },
+        {
+          "shot_number": "S05",
+          "shot_type": "close_up",
+          "lens_mm": null,
+          "description": "Close-up of Sarah's face as she tries to maintain control. Her eyes dart around, and a small crease forms between her eyebrows.",
+          "movement": null,
+          "narrative_purpose": "Emotional objective: Unease"
+        },
+        {
+          "shot_number": "S06",
+          "shot_type": "pov",
+          "lens_mm": null,
+          "description": "A point-of-view shot from Marcus's perspective as he looks at Sarah, emphasizing his concern and the tension in their interaction.",
+          "movement": null,
+          "narrative_purpose": "Tone: Tense"
+        },
+        {
+          "shot_number": "S07",
+          "shot_type": "insert",
+          "lens_mm": null,
+          "description": "A close-up of the glass door reflecting Sarah's face. Her eyes are wide with fear, and her reflection shows conflicting emotions.",
+          "movement": null,
+          "narrative_purpose": "Visual objective: Reflection"
+        },
+        {
+          "shot_number": "S08",
+          "shot_type": "medium",
+          "lens_mm": null,
+          "description": "Marcus reaches out to gently touch Sarah's arm. She flinches slightly but tries to pull away, maintaining a facade of calm.",
+          "movement": null,
+          "narrative_purpose": "Character objective: Marcus"
+        }
+      ]
+    }
+  ],
+  "edited_sequences": [
+    {
+      "scene_number": 1,
+      "shot_order": [
+        "S01-Wide",
+        "S02-Medium Wide",
+        "S03-Medium",
+        "S04-Close-Up",
+        "S05-Medium Close-Up",
+        "S06-Close-Up"
+      ],
+      "pacing_notes": "The scene begins with a wide shot to establish the setting and atmosphere, allowing for a sense of dread to build. The medium wide shot (S02) introduces Sarah's actions and hints at her secretive behavior, which is then emphasized through close-ups that capture both her emotional state and hidden secrets. As we progress, the tension builds further with deliberate and cautious movements in S05 and S06, culminating in a palpable sense of danger.",
+      "transitions_in_out": "The scene opens with a hard cut from the wide shot to the medium wide shot (S02) to immediately engage the audience. The scene ends with a hard cut to the close-up of the revolver (S06), leaving the audience on a note of intense tension and anticipation for what might happen next."
+    },
+    {
+      "scene_number": 2,
+      "shot_order": [
+        "S01",
+        "S02",
+        "S03",
+        "S04",
+        "S05",
+        "S06",
+        "S07",
+        "S08"
+      ],
+      "pacing_notes": "Start with a wide shot to establish the setting and Marcus's entrance, slowly building tension. Shift to medium shots for their interaction, accelerating as the tension between them increases. Close-ups will be used to highlight Sarah's nervousness and Marcus's growing concern. End with a close-up of Sarah's face to leave the audience on edge.",
+      "transitions_in_out": "Begin with a hard cut from the wide shot to S02 to immediately draw attention to their interaction. Transition between shots using soft cuts or dissolves to maintain the tense atmosphere, and end with a slow fade out to emphasize the lingering tension."
+    }
+  ],
+  "cinematography_critiques": [
+    {
+      "scene_number": 1,
+      "stage": "cinematography",
+      "score": 7,
+      "passes": true,
+      "feedback": "The close-up of Sarah's trembling hand as she pours whiskey, with a hint of the letter visible in her coat pocket through the fabric (S04), effectively serves the brief by creating an atmosphere of hidden secrets and tension. However, it could be more impactful if there were a slight adjustment to ensure that the letter is more clearly visible without compromising Sarah's hand tremor. This would strengthen the visual objective and make the audience feel more certain about the presence of the dangerous or incriminating letter."
+    },
+    {
+      "scene_number": 2,
+      "stage": "cinematography",
+      "score": 7,
+      "passes": true,
+      "feedback": "The close-up of Sarah's hands trembling as she hides the letter in a drawer effectively serves the brief by hinting at her nervousness and the potential threat or secret. However, there are some areas for improvement to better align with the Director's Intent Brief."
+    }
+  ],
+  "final_critiques": [
+    {
+      "scene_number": 1,
+      "stage": "editing",
+      "score": 7,
+      "passes": true,
+      "feedback": "The editing effectively builds tension and hints at Sarah's secretive behavior, but there are a few areas that could be refined to better align with the Director's Intent Brief. Specifically, the wide shot (S01) is somewhat unnecessary for establishing the emotional state of the character or the hidden secrets. Consider starting directly with the medium wide shot (S02), which introduces Sarah and her actions more immediately. Additionally, while the close-ups in S05 and S06 are well-chosen to emphasize tension, the transitions could be smoother. A soft fade-in from the medium wide shot to a close-up of Sarah's trembling hand (S04) would better convey the emotional state and create a more seamless build-up of tension."
+    },
+    {
+      "scene_number": 2,
+      "stage": "editing",
+      "score": 7,
+      "passes": true,
+      "feedback": "The editing pipeline effectively establishes the tension between Marcus and Sarah, aligning well with the Director's Intent Brief. However, there are a few areas that could be improved to better serve the brief’s objectives."
+    }
+  ],
+  "cinematography_revision_count": 0,
+  "max_revisions": 2,
+  "log": [
+    "[Script Analyst] extracted 2 scenes",
+    "[Scene Design] wrote 2 intent briefs",
+    "[Cinematography] produced/updated 2 shot lists",
+    "[Critic] scored 2 shot lists",
+    "[Editing] assembled 2 scene sequences",
+    "[Critic] scored 2 edited sequences"
+  ]
+}
