@@ -3,7 +3,7 @@ import json
 from pathlib import Path
 
 from film_agents.schemas import ProjectState
-from film_agents.graph import build_graph
+from film_agents.graph import build_reasoning_graph
 
 
 
@@ -11,7 +11,7 @@ def main():
     script_path = sys.argv[1] if len(sys.argv) > 1 else "sample_script.txt"
     script_text = Path(script_path).read_text()
 
-    graph = build_graph()
+    graph = build_reasoning_graph()
     initial_state = ProjectState(script_text=script_text)
 
     print(f"Running pipeline on: {script_path}\n{'=' * 60}")

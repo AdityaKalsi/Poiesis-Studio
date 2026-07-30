@@ -14,7 +14,7 @@ from __future__ import annotations
 
 from film_generation.config import GenerationConfig
 from film_generation.generation.asset_manager import AssetManager
-from film_generation.models import text2image
+from film_generation.models.text2image import generate_image
 from film_generation.schemas import CharacterReference
 
 
@@ -31,7 +31,7 @@ def generate_character_reference(
         f"reference image across many shots."
     )
 
-    result = text2image.generate_image(prompt, config)
+    result = generate_image(prompt, config)
 
     image_path = assets.output_dir / "characters" / f"{character_name.replace(' ', '_')}.png"
     result.save(image_path)

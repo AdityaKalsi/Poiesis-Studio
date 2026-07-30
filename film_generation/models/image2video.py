@@ -13,6 +13,7 @@ from __future__ import annotations
 import os
 from dataclasses import dataclass
 from pathlib import Path
+import fal_client
 
 from film_generation.config import GenerationConfig
 
@@ -38,8 +39,6 @@ def animate(
     """Uploads a local shot image to fal's storage, then calls Wan 2.5
     image-to-video with a motion-describing prompt (built from Shot.movement
     upstream in generation/image2video.py)."""
-
-    import fal_client
 
     _ensure_fal_key()
 

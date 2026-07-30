@@ -24,11 +24,14 @@ class CharacterReference(BaseModel):
     description: str = Field(..., description="Text description used to seed generation")
     reference_image_path: str
     # Payload shape depends on config.consistency.strategy:
+    #   reference_image -> same as reference_image_path; the image itself
+    #                       IS the payload, passed as multimodal input to
+    #                       Gemini alongside the shot prompt (current default)
     #   ip_adapter / instantid -> path to a stored image embedding (.npy/.pt)
     #   lora                   -> path to a trained LoRA checkpoint
     #   text_only               -> None, description text is all that's reused
     identity_payload_path: Optional[str] = None
-    identity_payload_kind: Literal["embedding", "lora", "none"] = "none"
+    identity_payload_kind: Literal["image", "embedding", "lora", "none"] = "none"
     seed: Optional[int] = None
     approved: bool = False  # set True once it passes the human/critic gate
 
