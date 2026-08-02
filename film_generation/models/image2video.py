@@ -14,7 +14,7 @@ import os
 from dataclasses import dataclass
 from pathlib import Path
 import fal_client
-
+import urllib.request
 from film_generation.config import GenerationConfig
 
 
@@ -39,7 +39,7 @@ def animate(
     """Uploads a local shot image to fal's storage, then calls Wan 2.5
     image-to-video with a motion-describing prompt (built from Shot.movement
     upstream in generation/image2video.py)."""
-
+    print(f"Animating image with motion prompt: {motion_prompt}")
     _ensure_fal_key()
 
     image_url = fal_client.upload_file(image_path)
@@ -70,7 +70,6 @@ def download(video_result: VideoResult, dest_path: Path) -> Path:
     off to asset_manager.py, or the file will be gone by the time
     video_editor.py needs it."""
 
-    import urllib.request
 
     dest_path.parent.mkdir(parents=True, exist_ok=True)
     urllib.request.urlretrieve(video_result.video_url, dest_path)

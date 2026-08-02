@@ -27,17 +27,26 @@ def generate_shot_image(
     assets: AssetManager,
     seed: int,
 ) -> GeneratedImage:
+    print(
+        f"Generating Shot Image for scene {shot_prompt.scene_number}, "
+        f"shot {shot_prompt.shot_number}..."
+    )
+
     reference_image_paths: list[str] = []
     for name in shot_prompt.character_ref_ids:
         ref = character_refs.get(name)
         if ref is not None:
             reference_image_paths.append(ref.reference_image_path)
+
     if scene_anchor is not None:
         reference_image_paths.append(scene_anchor.environment_image_path)
 
-    # HuggingFace backend can't take reference images -- fall back to
-    # prompt-only if that's the active backend (see models/text2image.py).
-    use_refs = reference_image_paths if config.models.text2image_backend == "gemini" else None
+    # HuggingFace backend can't take reference images.
+    use_refs = (
+        reference_image_paths
+        if config.models.text2image_backend == "gemini"
+        else None
+    )
 
     result = text2image.generate_image(
         shot_prompt.positive_prompt,
@@ -45,13 +54,22 @@ def generate_shot_image(
         reference_image_paths=use_refs,
     )
 
-    cache_key = compute_cache_key(shot_prompt, config.models.text2image_backend, seed)
+    cache_key = compute_cache_key(
+        shot_prompt,
+        config.models.text2image_backend,
+        seed,
+    )
+
     image_path = assets.path_for(
-        shot_prompt.scene_number, shot_prompt.shot_number, "shot_image", cache_key, "png"
+        shot_prompt.scene_number,
+        shot_prompt.shot_number,
+        "shot_image",
+        cache_key,
+        "png",
     )
     result.save(image_path)
 
-    return GeneratedImage(
+    generated_image = GeneratedImage(
         scene_number=shot_prompt.scene_number,
         shot_number=shot_prompt.shot_number,
         image_path=str(image_path),
@@ -60,3 +78,11 @@ def generate_shot_image(
         seed=seed,
         cache_key=cache_key,
     )
+
+    # Save metadata
+    json_path = image_path.with_suffix(".json")
+    json_path.write_text(generated_image.model_dump_json(indent=2))
+
+    print(f"Shot image metadata written to {json_path.resolve()}")
+
+    return generated_image

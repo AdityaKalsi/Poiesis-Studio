@@ -1,0 +1,13 @@
+{
+  "scene_number": 2,
+  "shot_number": "S02",
+  "positive_prompt": "Elena approaches the chest, opening it carefully with a flashlight in hand. She examines its contents methodically, revealing artifacts like old coins and a silver key., medium shot, waist-up framing, tone: Tense and mysterious, low-key lighting, hard shadows, desaturated palette, environment consistent with: abandoned circular room in watchtower",
+  "negative_prompt": "extra limbs, distorted hands, warped face, text artifacts, watermark, low resolution, inconsistent lighting",
+  "character_ref_ids": [
+    "ELENA",
+    "KAI",
+    "MIRA"
+  ],
+  "scene_anchor_id": 2,
+  "seed": null
+}

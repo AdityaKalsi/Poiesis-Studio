@@ -1,0 +1,8 @@
+{
+  "scene_number": 2,
+  "environment_image_path": "film_generation\\outputs\\scene_anchor\\scene_002\\anchor.png",
+  "layout_description": "abandoned circular room in watchtower",
+  "lighting_description": "A close-up shot of the engraved silver key with light shining through it, symbolizing both discovery and mystery.",
+  "seed": null,
+  "approved": false
+}

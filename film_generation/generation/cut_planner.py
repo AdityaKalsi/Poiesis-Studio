@@ -61,6 +61,7 @@ def plan_cuts(
     clips_by_shot: dict[str, GeneratedClip],
     fps: int = 24,
 ) -> EditDecisionList:
+    print(f"Planning cuts for scene {edited_sequence.scene_number} at {fps} fps...")
     available_durations = "\n".join(
         f"- shot {shot_number}: {clips_by_shot[shot_number].duration_seconds:.1f}s available"
         for shot_number in edited_sequence.shot_order
@@ -72,7 +73,7 @@ def plan_cuts(
         f"Transitions: {edited_sequence.transitions_in_out}\n\n"
         f"Available clip durations:\n{available_durations}\n"
     )
-
+    print(f"Prompt for cut planning:\n{prompt}")
     structured_llm = _llm().with_structured_output(CutPlanLLMOutput)
     result: CutPlanLLMOutput = structured_llm.invoke(
         [("system", CUT_PLANNER_SYSTEM), ("human", prompt)]
@@ -80,10 +81,10 @@ def plan_cuts(
 
     decisions: list[EditDecision] = []
     cursor_frame = 0
-    by_shot = {d.shot_number: d for d in result.decisions}
-
+    decision_by_shot = {d.shot_number: d for d in result.decisions}
+    print(f"Cut planning decisions: {decision_by_shot}")
     for shot_number in edited_sequence.shot_order:
-        decision = by_shot.get(shot_number)
+        decision = decision_by_shot.get(shot_number)
         clip = clips_by_shot.get(shot_number)
         if decision is None or clip is None:
             continue  # missing clip/decision -- caller should treat as incomplete plan
@@ -101,7 +102,7 @@ def plan_cuts(
             )
         )
         cursor_frame += frame_count
-
+    print(f"Final cut plan: {decisions}")
     return EditDecisionList(
         scene_number=edited_sequence.scene_number, fps=fps, decisions=decisions
     )

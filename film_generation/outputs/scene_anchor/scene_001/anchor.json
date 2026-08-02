@@ -1,0 +1,8 @@
+{
+  "scene_number": 1,
+  "environment_image_path": "film_generation\\outputs\\scene_anchor\\scene_001\\anchor.png",
+  "layout_description": "narrow trail in mountain forest",
+  "lighting_description": "A warm, golden hour light filtering through the trees, casting long shadows on the trail, with the three characters moving in harmony towards their goal.",
+  "seed": null,
+  "approved": false
+}

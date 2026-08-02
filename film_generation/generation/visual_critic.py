@@ -61,7 +61,7 @@ def critique_shot_image(
 ) -> VisualCritique:
     from google import genai
     from google.genai import types
-
+    
     api_key = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
     if not api_key:
         raise RuntimeError("GEMINI_API_KEY (or GOOGLE_API_KEY) is not set -- required for the visual critic.")
@@ -71,6 +71,7 @@ def critique_shot_image(
     relevant_refs = [
         character_refs[name] for name in image.prompt_used.character_ref_ids if name in character_refs
     ]
+    print(f"Critiquing shot image for scene {image.scene_number}, shot {image.shot_number} with {relevant_refs} character references...")
 
     brief_text = (
         f"Director's Intent Brief:\n"
@@ -85,7 +86,6 @@ def critique_shot_image(
     for ref in relevant_refs:
         contents.append(types.Part.from_bytes(data=Path(ref.reference_image_path).read_bytes(), mime_type="image/png"))
     contents.append(brief_text)
-
     response = client.models.generate_content(
         model=config.models.vlm_backend,
         contents=contents,
@@ -97,11 +97,10 @@ def critique_shot_image(
     )
 
     result: _CritiqueOutput = response.parsed
-
+    print(f"Critique result for scene {image.scene_number}, shot {image.shot_number}: {result}")
     passes = result.passes_brief and (
         not relevant_refs or result.identity_match_confidence >= config.consistency.identity_similarity_threshold
     )
-
     return VisualCritique(
         scene_number=image.scene_number,
         shot_number=image.shot_number,

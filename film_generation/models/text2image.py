@@ -35,6 +35,10 @@ class ImageResult:
         return path
 
 
+class GenerationBlockedError(RuntimeError):
+    """Raised when the image generator returns a blocked or unusable result."""
+
+
 # ---------------------------------------------------------------------------
 # Gemini backend (active) -- supports text + reference image(s) -> image
 # ---------------------------------------------------------------------------
@@ -46,7 +50,8 @@ def _generate_gemini(
 ) -> ImageResult:
     from google import genai
     from google.genai import types
-
+    print("\n" + "="*80 + "\n")
+    print(f"[Gemini] Generating image")
     api_key = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
     if not api_key:
         raise RuntimeError(
@@ -64,18 +69,33 @@ def _generate_gemini(
             mime_type="image/png",
         ))
     contents.append(prompt)
-
+    
     response = client.models.generate_content(
         model=config.models.gemini_image_model,
         contents=contents,
         config=types.GenerateContentConfig(response_modalities=["IMAGE"]),
     )
 
+    # Gemini returns candidates=[] (and .parts=None) on safety blocks or
+    # empty generations -- never assume .parts is iterable.
+    if not response.candidates:
+        feedback = getattr(response, "prompt_feedback", None)
+        block_reason = getattr(feedback, "block_reason", "unknown")
+        raise GenerationBlockedError(
+            f"Gemini returned no candidates (block_reason={block_reason}) "
+            f"for prompt: {prompt[:200]!r}"
+        )
+
+    candidate = response.candidates[0]
+    if candidate.finish_reason not in ("STOP", "MAX_TOKENS", None) or not candidate.content.parts:
+        raise GenerationBlockedError(
+            f"Gemini finished with reason={candidate.finish_reason!r}, no usable parts. "
+            f"Prompt: {prompt[:200]!r}"
+        )
     for part in response.parts:
         if part.inline_data:
             return ImageResult(image_bytes=part.inline_data.data, mime_type=part.inline_data.mime_type)
 
-    raise RuntimeError(f"Gemini returned no image data for prompt: {prompt[:80]!r}")
 
 
 # ---------------------------------------------------------------------------

@@ -1,0 +1,21 @@
+{
+  "scene_number": 1,
+  "shot_number": "S02-Medium",
+  "image_path": "film_generation\\outputs\\scene_001\\shot_image_S02-Medium_46ffb5df4fb48f85.png",
+  "prompt_used": {
+    "scene_number": 1,
+    "shot_number": "S02-Medium",
+    "positive_prompt": "Elena leads the group, holding a map and compass. She points out landmarks to Kai and Mira as they navigate., medium shot, waist-up framing, tone: Tense yet hopeful, low-key lighting, hard shadows, desaturated palette, environment consistent with: narrow trail in mountain forest",
+    "negative_prompt": "extra limbs, distorted hands, warped face, text artifacts, watermark, low resolution, inconsistent lighting",
+    "character_ref_ids": [
+      "ELENA",
+      "KAI",
+      "MIRA"
+    ],
+    "scene_anchor_id": 1,
+    "seed": null
+  },
+  "model_backend": "gemini",
+  "seed": 1613841331,
+  "cache_key": "46ffb5df4fb48f85"
+}

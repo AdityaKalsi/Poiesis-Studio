@@ -120,7 +120,7 @@ def node_final_critic(state: ProjectState) -> dict:
     }
 
 
-def build_graph():
+def build_reasoning_graph():
     graph = StateGraph(ProjectState)
 
     graph.add_node("script_analyst", node_script_analyst)

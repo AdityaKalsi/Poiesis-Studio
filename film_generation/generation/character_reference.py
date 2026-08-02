@@ -24,22 +24,38 @@ def generate_character_reference(
     config: GenerationConfig,
     assets: AssetManager,
 ) -> CharacterReference:
+    
+    print(f"Generating character reference for {character_name}...")
+
     prompt = (
         f"A single clean character reference portrait of {character_name}. "
         f"{description}. Neutral studio background, front-facing, natural "
         f"lighting, high detail, consistent likeness for reuse as a "
         f"reference image across many shots."
     )
-
+    
     result = generate_image(prompt, config)
 
-    image_path = assets.output_dir / "characters" / f"{character_name.replace(' ', '_')}.png"
+    # Save image
+    character_dir = assets.output_dir / "characters"
+    character_dir.mkdir(parents=True, exist_ok=True)
+
+    image_path = character_dir / f"{character_name.replace(' ', '_')}.png"
     result.save(image_path)
 
-    return CharacterReference(
+    # Create CharacterReference object
+    character_reference = CharacterReference(
         character_name=character_name,
         description=description,
         reference_image_path=str(image_path),
         identity_payload_path=str(image_path),
         identity_payload_kind="image",
     )
+
+    # Save JSON
+    json_path = character_dir / f"{character_name.replace(' ', '_')}.json"
+    json_path.write_text(character_reference.model_dump_json(indent=2))
+
+    print(f"Character reference written to {json_path.resolve()}")
+
+    return character_reference

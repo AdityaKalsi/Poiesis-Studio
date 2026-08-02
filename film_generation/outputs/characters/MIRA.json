@@ -1,0 +1,9 @@
+{
+  "character_name": "MIRA",
+  "description": "Elena: determined, late 20s; Kai: rugged, 30s; Mira: curious, 20s",
+  "reference_image_path": "film_generation\\outputs\\characters\\MIRA.png",
+  "identity_payload_path": "film_generation\\outputs\\characters\\MIRA.png",
+  "identity_payload_kind": "image",
+  "seed": null,
+  "approved": false
+}

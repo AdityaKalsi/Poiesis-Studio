@@ -1,0 +1,21 @@
+{
+  "scene_number": 2,
+  "shot_number": "S04",
+  "image_path": "film_generation\\outputs\\scene_002\\shot_image_S04_298089319d134671.png",
+  "prompt_used": {
+    "scene_number": 2,
+    "shot_number": "S04",
+    "positive_prompt": "Kai crouches down, using a lantern to closely examine each symbol on the walls. His intense focus and concentration are captured in this shot., medium shot, waist-up framing, tone: Tense and mysterious, low-key lighting, hard shadows, desaturated palette, environment consistent with: abandoned circular room in watchtower",
+    "negative_prompt": "extra limbs, distorted hands, warped face, text artifacts, watermark, low resolution, inconsistent lighting",
+    "character_ref_ids": [
+      "ELENA",
+      "KAI",
+      "MIRA"
+    ],
+    "scene_anchor_id": 2,
+    "seed": null
+  },
+  "model_backend": "gemini",
+  "seed": 793463897,
+  "cache_key": "298089319d134671"
+}

@@ -13,7 +13,9 @@ from pydantic import BaseModel, Field
 
 
 ConsistencyStrategy = Literal["reference_image", "ip_adapter", "instantid", "lora", "text_only"]
-TransitionType = Literal["cut", "crossfade", "match_cut", "fade_to_black"]
+
+class TransitionType(BaseModel):
+    transitons:Literal["cut", "crossfade", "match_cut", "fade_to_black"]
 
 
 class ModelConfig(BaseModel):
@@ -47,8 +49,7 @@ class ModelConfig(BaseModel):
 
     image2video_fal_model: str = "fal-ai/wan-25-preview/image-to-video"
 
-    vlm_backend: str = "gemini-2.5-flash"
-
+    vlm_backend: str = "gemini-2.5-flash-lite"
 
 class ConsistencyConfig(BaseModel):
     strategy: ConsistencyStrategy = "reference_image"

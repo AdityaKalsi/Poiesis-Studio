@@ -17,6 +17,7 @@ from __future__ import annotations
 from film_agents.schemas import Shot, SceneIntentBrief
 from film_generation.generation.continuity_manager import ContinuityManager
 from film_generation.schemas import CharacterReference, SceneAnchor, ShotPrompt
+from film_generation.generation.asset_manager import AssetManager
 from film_generation.utils.prompt_utils import (
     DEFAULT_NEGATIVE_PROMPT,
     SHOT_TYPE_LANGUAGE,
@@ -35,15 +36,15 @@ def generate_shot_prompt(
     cast: list[str],
     props: list[str],
     prior_feedback: str | None = None,
+    assets: AssetManager | None = None,
 ) -> ShotPrompt:
-    
+    print(f"Generating prompt for scene {scene_number}, shot {shot.shot_number}")
     shot_language = SHOT_TYPE_LANGUAGE.get(shot.shot_type, shot.shot_type)
     lighting = lighting_hint_for_tone(brief.tone)
     lens = lens_hint(shot.lens_mm)
     continuity_context = continuity.get_context_for_shot(cast, props)
-
+    
     referenced_characters = [name for name in cast if name in character_refs]
-
     parts = [
         shot.description,
         shot_language,
@@ -64,7 +65,7 @@ def generate_shot_prompt(
 
     positive_prompt = ", ".join(p for p in parts if p)
 
-    return ShotPrompt(
+    shotprompt = ShotPrompt(
         scene_number=scene_number,
         shot_number=shot.shot_number,
         positive_prompt=positive_prompt,
@@ -72,3 +73,14 @@ def generate_shot_prompt(
         character_ref_ids=referenced_characters,
         scene_anchor_id=scene_anchor.scene_number if scene_anchor else None,
     )
+
+    
+    json_path = (
+        assets.output_dir
+        / f"scene_{scene_number}"
+        / f"shot_{shot.shot_number}_prompt.json"
+    )
+    json_path.parent.mkdir(parents=True, exist_ok=True)
+    json_path.write_text(shotprompt.model_dump_json(indent=2))
+
+    return shotprompt

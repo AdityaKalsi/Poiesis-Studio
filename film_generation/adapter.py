@@ -21,6 +21,7 @@ from film_generation.schemas import GenerationState
 
 
 def build_generation_state(project_state: ProjectState) -> GenerationState:
+    print("[Adapter] building GenerationState from ProjectState...")
     if project_state.breakdown is None:
         raise ValueError(
             "ProjectState.breakdown is empty -- run the reasoning pipeline "

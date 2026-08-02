@@ -31,12 +31,25 @@ def generate_scene_anchor(
 
     result = text2image.generate_image(prompt, config)
 
-    image_path = assets.output_dir / f"scene_{scene.scene_number:03d}" / "anchor.png"
-    result.save(image_path)
+    # Ensure the scene directory exists
+    scene_dir = assets.output_dir/ "scene_anchor" / f"scene_{scene.scene_number:03d}"
+    scene_dir.mkdir(parents=True, exist_ok=True)
 
-    return SceneAnchor(
+    # Save image
+    image_path = scene_dir / "anchor.png"
+    result.save(image_path)
+    print(f"Scene anchor for scene {scene.scene_number} saved to {image_path}")
+
+    # Create SceneAnchor object
+    scene_anchor = SceneAnchor(
         scene_number=scene.scene_number,
         environment_image_path=str(image_path),
         layout_description=location_desc,
         lighting_description=visual_objective,
     )
+
+    # Save JSON
+    json_path = scene_dir / "anchor.json"
+    json_path.write_text(scene_anchor.model_dump_json(indent=2))
+
+    return scene_anchor

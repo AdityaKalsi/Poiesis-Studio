@@ -1,52 +1,86 @@
 {
-  "script_text": "INT. KITCHEN - NIGHT\n\nSARAH (30s, exhausted) stares at a letter on the table. She pours whiskey\ninto a chipped mug, hands trembling. Headlights sweep across the window --\nsomeone's outside.\n\nSarah quickly folds the letter and shoves it into her coat pocket. She\nopens a drawer, pulls out an old revolver, and sets it on the counter\nwithin reach.\n\nINT. KITCHEN - CONTINUOUS\n\nThe front door creaks open. MARCUS (40s, soaked from rain) steps into the\nhallway, calling out.\n\nMARCUS\nSarah? It's me.\n\nSarah's hand hovers near the revolver. She recognizes his voice and\nrelaxes, but only slightly. She slides the gun back into the drawer\nbefore he enters the kitchen.\n\nMARCUS (CONT'D)\n(seeing her face)\nWhat happened?\n\nSARAH\nNothing happened. Where were you?\n\nMarcus doesn't answer. He notices the whiskey, the trembling hands, the\noutline of the letter in her pocket. A long beat of silence between them.\n",
+  "script_text": "**EXT. MOUNTAIN FOREST TRAIL â€“ SUNSET**\n\nA narrow trail winds through towering pine trees. Golden sunlight filters through the branches as mist drifts between the trunks. Fallen leaves cover the ground.\n\nELENA (late 20s, determined), KAI (30s, rugged), and MIRA (20s, curious) hike cautiously through the forest.\n\nElena studies an old leather map while Kai scans the surroundings with a pair of binoculars. Mira carries a weathered backpack with a lantern hanging from its side.\n\nA flock of birds suddenly bursts from the trees.\n\nThe three freeze.\n\nKAI\nSomething's moving.\n\nA low rumble echoes in the distance.\n\nElena folds the map and points toward an abandoned stone watchtower visible on a nearby ridge.\n\nThe group quickly heads uphill.\n\n---\n\n**INT. ABANDONED WATCHTOWER â€“ DUSK**\n\nDust floats through beams of fading sunlight entering broken windows.\n\nAncient books, rusted weapons, shattered furniture, and faded banners lie scattered across the circular room.\n\nKai lights the lantern.\n\nThe warm glow reveals strange symbols carved into the stone floor.\n\nMira kneels beside a wooden chest covered in dust.\n\nShe carefully opens it.\n\nInside are a brass compass, an engraved silver key, and a cracked journal.\n\nELENA\nTake the journal.\n\nKai notices fresh muddy footprints leading toward a narrow spiral staircase.\n\nThe lantern flickers.\n\nThe room falls silent.\n\nThe three exchange nervous glances before climbing the stairs.\n\n---\n\n**EXT. WATCHTOWER ROOFTOP â€“ NIGHT**\n\nDark storm clouds gather overhead.\n\nRain begins to fall.\n\nThe rooftop overlooks an enormous valley illuminated by distant lightning.\n\nAncient statues stand around a circular stone platform.\n\nWind whips Elena's coat as she places the silver key into a stone pedestal.\n\nThe platform slowly begins to glow with faint blue light.\n\nKai raises his flashlight toward the surrounding cliffs.\n\nSeveral distant silhouettes stand motionless among the rocks.\n\nMIRA\nWe're not alone.\n\nThe glowing platform emits a low hum.\n\nLightning flashes across the sky as the three stand together, staring into the darkness.\n",
   "breakdown": {
     "title": "Script Breakdown",
     "scenes": [
       {
         "scene_number": 1,
-        "heading": "INT. KITCHEN - NIGHT",
-        "synopsis": "Sarah, exhausted and trembling, pours whiskey into a chipped mug after receiving a letter. She hides the letter in her coat pocket and places an old revolver on the counter.",
+        "heading": "EXT. MOUNTAIN FOREST TRAIL – SUNSET",
+        "synopsis": "Elena, Kai, and Mira hike through a forest trail at sunset.",
         "cast": [
-          "SARAH"
+          "ELENA",
+          "KAI",
+          "MIRA"
         ],
         "props": [
-          "letter",
-          "chipped mug",
-          "whiskey",
-          "old revolver",
-          "drawer"
+          "old leather map",
+          "binoculars",
+          "weathered backpack with lantern hanging from its side"
         ],
         "locations": [
-          "KITCHEN"
+          "narrow trail in mountain forest"
         ],
         "wardrobe_notes": [
-          "exhausted, trembling hands"
+          "Elena: determined, late 20s; Kai: rugged, 30s; Mira: curious, 20s"
         ],
-        "vfx_or_sfx": [],
+        "vfx_or_sfx": [
+          "birds bursting from trees",
+          "low rumble echoing in the distance"
+        ],
         "stunts": [],
         "special_equipment": [],
         "sound_notes": []
       },
       {
         "scene_number": 2,
-        "heading": "INT. KITCHEN - CONTINUOUS",
-        "synopsis": "Marcus, soaked from rain, enters the kitchen and asks Sarah what happened. She denies anything occurred but he notices her trembling hands, whiskey, and the letter in her pocket.",
+        "heading": "INT. ABANDONED WATCHTOWER – DUSK",
+        "synopsis": "The group enters an abandoned watchtower and finds strange symbols, a chest with items inside, and fresh footprints.",
         "cast": [
-          "SARAH",
-          "MARCUS"
+          "ELENA",
+          "KAI",
+          "MIRA"
         ],
         "props": [
-          "whiskey",
-          "trembling hands",
-          "letter (outline)",
-          "drawer"
+          "lantern",
+          "journal",
+          "brass compass",
+          "engraved silver key",
+          "fresh muddy footprints",
+          "narrow spiral staircase"
         ],
         "locations": [
-          "KITCHEN"
+          "abandoned circular room in watchtower"
         ],
         "wardrobe_notes": [],
-        "vfx_or_sfx": [],
+        "vfx_or_sfx": [
+          "flickering lantern",
+          "ancient symbols glowing faintly"
+        ],
+        "stunts": [],
+        "special_equipment": [],
+        "sound_notes": []
+      },
+      {
+        "scene_number": 3,
+        "heading": "EXT. WATCHTOWER ROOFTOP – NIGHT",
+        "synopsis": "The group stands on the rooftop of the watchtower during a storm, placing a key into a stone pedestal and facing unknown figures.",
+        "cast": [
+          "ELENA",
+          "KAI",
+          "MIRA"
+        ],
+        "props": [
+          "silver key",
+          "stone pedestal",
+          "flashlight"
+        ],
+        "locations": [
+          "watchtower rooftop overlooking an enormous valley with ancient statues around a circular platform"
+        ],
+        "wardrobe_notes": [],
+        "vfx_or_sfx": [
+          "gathering storm clouds, rain, distant lightning flashes, low hum from glowing platform"
+        ],
         "stunts": [],
         "special_equipment": [],
         "sound_notes": []
@@ -56,24 +90,39 @@
   "intent_briefs": [
     {
       "scene_number": 1,
-      "purpose": "To establish Sarah's emotional state of distress and hidden danger after receiving a threatening letter.",
-      "emotional_objective": "The audience should feel empathy for Sarah and tension regarding her potential danger.",
-      "visual_objective": "A close-up shot of Sarah's face as she pours whiskey, capturing the tremor in her hand and the conflicted expression on her face, with the revolver subtly visible in a drawer behind her.",
+      "purpose": "To establish the characters' bond and their shared goal of finding a hidden cabin in the forest.",
+      "emotional_objective": "The audience should feel a sense of camaraderie and adventure as the friends navigate through the wilderness together at sunset.",
+      "visual_objective": "A warm, golden hour light filtering through the trees, casting long shadows on the trail, with the three characters moving in harmony towards their goal.",
       "character_objectives": {
-        "Sarah": "To relieve her stress by drinking alcohol and to prepare for potential danger by hiding the letter and placing the revolver within reach. She pours whiskey as a coping mechanism and hides the letter to avoid immediate confrontation, while keeping the revolver close as a precaution."
+        "Elena": "To lead the group and find the hidden cabin as quickly as possible. She uses her knowledge of the forest and the map to navigate.",
+        "Kai": "To support Elena while also trying to impress Mira with his outdoor skills. He helps carry heavier items and suggests potential directions.",
+        "Mira": "To maintain a positive attitude and encourage the others, especially when facing challenges like steep climbs or dense undergrowth. She uses her binoculars to spot landmarks."
       },
-      "tone": "Tense"
+      "tone": "Tense yet hopeful"
     },
     {
       "scene_number": 2,
-      "purpose": "To reveal Sarah's secret and hint at a recent event that has affected her emotionally and possibly physically.",
-      "emotional_objective": "The audience should feel a mix of curiosity and concern for Sarah’s well-being, as well as tension regarding the nature of the secret she is hiding from Marcus.",
-      "visual_objective": "A close-up shot of Sarah's trembling hands with a flickering light casting shadows on her face to emphasize her anxiety and hidden emotions.",
+      "purpose": "Establish the mysterious nature of the abandoned watchtower and hint at potential supernatural or historical significance.",
+      "emotional_objective": "Create a sense of unease and curiosity in the audience about the unknown history and current presence of the watchtower.",
+      "visual_objective": "A close-up shot of the engraved silver key with light shining through it, symbolizing both discovery and mystery.",
       "character_objectives": {
-        "SARAH": "To conceal the truth about what happened, using tactics like denial and subtle physical cues (trembling hands) to avoid direct confrontation with Marcus. She wants him to leave without knowing her secret.",
-        "MARCUS": "To uncover the reason behind Sarah's unusual behavior, using both verbal probing and observational techniques (noticing her trembling hands and the letter in her pocket). He wants to get to the bottom of what has disturbed his wife."
+        "Elena": "To explore the chest and find items that might provide clues about the watchtower's purpose. Tactic: She carefully opens the chest and examines its contents methodically.",
+        "Kai": "To investigate the symbols on the walls, trying to decode their meaning. Tactic: He uses a lantern to closely examine each symbol with intense focus.",
+        "Mira": "To follow the fresh footprints leading up the spiral staircase, feeling a mix of curiosity and fear. Tactic: She cautiously steps over the footprints, her eyes wide with both interest and apprehension."
       },
-      "tone": "Tense"
+      "tone": "Tense and mysterious"
+    },
+    {
+      "scene_number": 3,
+      "purpose": "Establishes the mystical element of the story and sets up the group's quest or mission.",
+      "emotional_objective": "Create a sense of mystery and anticipation in the audience, hinting at an important ritual or discovery.",
+      "visual_objective": "A dramatic shot of the key being inserted into the stone pedestal with lightning striking nearby, casting dramatic shadows and enhancing the mystical atmosphere.",
+      "character_objectives": {
+        "Elena": "To ensure the ritual is performed correctly to gain the group's trust. Tactic: She carefully places the key in the stone pedestal while maintaining a composed demeanor, despite the storm.",
+        "Kai": "To observe the outcome of the ritual and gather intelligence on any potential threats. Tactic: He uses his flashlight to inspect the surroundings and notes any unusual activity or figures nearby.",
+        "Mira": "To feel included and valued by the group's actions. Tactic: She stands close to Elena, offering support and encouragement during the ritual."
+      },
+      "tone": "Mystical and tense"
     }
   ],
   "shot_lists": [
@@ -81,60 +130,68 @@
       "scene_number": 1,
       "shots": [
         {
-          "shot_number": "S1W",
+          "shot_number": "S01-Wide",
           "shot_type": "wide",
           "lens_mm": null,
-          "description": "The camera begins in a wide shot of the kitchen, revealing Sarah standing alone at the counter. The dim lighting and shadows create an eerie atmosphere.",
+          "description": "Establish the setting with the three characters walking on a forest trail at sunset. The golden hour light filters through the trees, casting long shadows and highlighting the rugged terrain.",
           "movement": null,
-          "narrative_purpose": "Geography and isolation/scale"
+          "narrative_purpose": "Geography/isolation/scale"
         },
         {
-          "shot_number": "S2M",
+          "shot_number": "S02-Medium",
           "shot_type": "medium",
           "lens_mm": null,
-          "description": "The camera moves to a medium shot of Sarah as she reaches into her coat pocket, pulling out the letter. She hesitates, then quickly hides it.",
+          "description": "Elena leads the group, holding a map and compass. She points out landmarks to Kai and Mira as they navigate.",
           "movement": null,
-          "narrative_purpose": "Plot-critical detail"
+          "narrative_purpose": "Character_objective: Elena's leadership"
         },
         {
-          "shot_number": "S3CU",
+          "shot_number": "S03-Close-up",
           "shot_type": "close_up",
           "lens_mm": null,
-          "description": "A close-up of Sarah's face as she pours whiskey into a chipped mug. Her hand trembles slightly, and her expression is conflicted.",
+          "description": "Close-up of Mira's face, smiling and encouraging the others with a reassuring smile. She uses her binoculars to spot a distant landmark.",
           "movement": null,
-          "narrative_purpose": "Emotional objective"
+          "narrative_purpose": "Emotional_objective: Camaraderie"
         },
         {
-          "shot_number": "S4I",
-          "shot_type": "insert",
-          "lens_mm": null,
-          "description": "An insert shot of the revolver on the counter behind Sarah. The camera slowly pans down to reveal the weapon, emphasizing its presence and Sarah's preparedness.",
-          "movement": null,
-          "narrative_purpose": "Visual objective"
-        },
-        {
-          "shot_number": "S5M",
+          "shot_number": "S04-Medium",
           "shot_type": "medium",
           "lens_mm": null,
-          "description": "A medium shot of Sarah pouring the whiskey into her mug. The camera captures the tension in her body as she takes a sip, trying to soothe herself.",
+          "description": "Kai helping Elena carry heavier items, both of them working together. Kai suggests a potential direction based on his outdoor skills.",
           "movement": null,
-          "narrative_purpose": "Character objective: coping mechanism"
+          "narrative_purpose": "Character_objective: Kai's support and confidence"
         },
         {
-          "shot_number": "S6CU",
+          "shot_number": "S05-Close-up",
           "shot_type": "close_up",
           "lens_mm": null,
-          "description": "A close-up of Sarah's face after she drinks the whiskey. Her expression shifts from tension to a brief moment of relief, but then back to unease.",
+          "description": "Elena’s face as she studies the map intently, showing determination. She finds a clue that leads them forward.",
           "movement": null,
-          "narrative_purpose": "Emotional objective"
+          "narrative_purpose": "Character_objective: Elena's knowledge and determination"
         },
         {
-          "shot_number": "S7W",
+          "shot_number": "S06-Close-up",
+          "shot_type": "close_up",
+          "lens_mm": null,
+          "description": "Mira’s face as she uses her binoculars to spot a distant landmark, then smiles at Kai. She is proud of his help.",
+          "movement": null,
+          "narrative_purpose": "Character_objective: Mira's encouragement"
+        },
+        {
+          "shot_number": "S07-Wide",
           "shot_type": "wide",
           "lens_mm": null,
-          "description": "The camera pulls back to a wide shot of Sarah standing alone in the kitchen. The dim lighting and shadows create an ominous atmosphere, emphasizing her isolation and vulnerability.",
+          "description": "The three characters walking together, the golden hour light intensifying as they approach a clearing. They see the hidden cabin in the distance.",
           "movement": null,
-          "narrative_purpose": "Geography and tension"
+          "narrative_purpose": "Visual_objective: Golden hour light and shared goal"
+        },
+        {
+          "shot_number": "S08-Close-up",
+          "shot_type": "close_up",
+          "lens_mm": null,
+          "description": "Elena, Kai, and Mira standing together in front of the cabin, smiling with a sense of accomplishment. The golden hour light bathes their faces.",
+          "movement": null,
+          "narrative_purpose": "Emotional_objective: Sense of camaraderie and shared goal"
         }
       ]
     },
@@ -145,65 +202,126 @@
           "shot_number": "S01",
           "shot_type": "wide",
           "lens_mm": null,
-          "description": "A wide shot of the kitchen, with raindrops splashing on the window. Marcus enters through a door, dripping wet. Sarah is sitting at the table, looking up in surprise.",
+          "description": "The group stands in the entrance of the abandoned watchtower, with a wide view showing the dilapidated structure and eerie silence. The sun is setting, casting long shadows and creating an ominous atmosphere.",
           "movement": null,
-          "narrative_purpose": "Establish the setting and introduce the characters' initial interaction."
+          "narrative_purpose": "Geography/scale"
         },
         {
           "shot_number": "S02",
           "shot_type": "medium",
           "lens_mm": null,
-          "description": "A medium shot of Marcus approaching Sarah. He looks at her with a mixture of concern and suspicion.",
+          "description": "Elena approaches the chest, opening it carefully with a flashlight in hand. She examines its contents methodically, revealing artifacts like old coins and a silver key.",
           "movement": null,
-          "narrative_purpose": "Set up the tension between Marcus and Sarah, hinting that something is off."
+          "narrative_purpose": "Character objective: Elena"
         },
         {
           "shot_number": "S03",
           "shot_type": "close_up",
           "lens_mm": null,
-          "description": "A close-up of Sarah's trembling hands as she clutches her glass of whiskey. The flickering light casts shadows on her face, emphasizing her anxiety.",
+          "description": "A close-up of the engraved silver key with light shining through it, highlighting intricate details. The key seems to glow faintly in the dim lighting.",
           "movement": null,
-          "narrative_purpose": "Reveal Sarah’s emotional state and hint at the secret she is hiding."
+          "narrative_purpose": "Visual objective: Close-up shot"
         },
         {
           "shot_number": "S04",
           "shot_type": "medium",
           "lens_mm": null,
-          "description": "A medium shot of Marcus examining a letter in his pocket, then looking back at Sarah with a mix of curiosity and concern.",
+          "description": "Kai crouches down, using a lantern to closely examine each symbol on the walls. His intense focus and concentration are captured in this shot.",
           "movement": null,
-          "narrative_purpose": "Show Marcus's suspicion and the object that might hold the key to her secret."
+          "narrative_purpose": "Character objective: Kai"
         },
         {
           "shot_number": "S05",
           "shot_type": "close_up",
           "lens_mm": null,
-          "description": "A close-up of Sarah’s face as she denies anything happened, with a subtle tremor in her voice.",
+          "description": "A close-up of one of the symbols on the wall, emphasizing its mysterious and ancient appearance. The lighting adds to the eerie atmosphere.",
           "movement": null,
-          "narrative_purpose": "Highlight Sarah's denial and the emotional conflict within her."
+          "narrative_purpose": "Visual objective: Close-up shot"
         },
         {
           "shot_number": "S06",
           "shot_type": "medium",
           "lens_mm": null,
-          "description": "A medium shot of Marcus standing over Sarah, leaning slightly forward as he asks, 'What happened?' with a tone of concern.",
+          "description": "Mira steps cautiously over the fresh footprints leading up the spiral staircase, her eyes wide with both curiosity and apprehension. She pauses at a particularly deep footprint.",
           "movement": null,
-          "narrative_purpose": "Push the tension further and show Marcus's determination to uncover what is bothering his wife."
+          "narrative_purpose": "Character objective: Mira"
         },
         {
           "shot_number": "S07",
-          "shot_type": "close_up",
+          "shot_type": "cutaway",
           "lens_mm": null,
-          "description": "A close-up of Sarah’s eyes, filled with a mix of fear and resolve as she tries to maintain her composure.",
+          "description": "A cutaway shot of the group standing around the chest, looking at each other with a mix of curiosity and unease. The sound of wind howling outside adds to the tension.",
           "movement": null,
-          "narrative_purpose": "Show the depth of Sarah's emotional state and her resolve not to reveal too much."
+          "narrative_purpose": "Tone: Tense and mysterious"
         },
         {
           "shot_number": "S08",
           "shot_type": "wide",
           "lens_mm": null,
-          "description": "A wide shot of Marcus and Sarah in the kitchen, with rain still dripping from the window. The tension between them is palpable.",
+          "description": "The group exits the watchtower, with a wide shot showing them walking away into the darkening landscape. The fading light adds to the sense of mystery and unease.",
           "movement": null,
-          "narrative_purpose": "Conclude the scene on a high note of tension and unresolved questions."
+          "narrative_purpose": "Geography/scale"
+        }
+      ]
+    },
+    {
+      "scene_number": 3,
+      "shots": [
+        {
+          "shot_number": "S01",
+          "shot_type": "wide",
+          "lens_mm": null,
+          "description": "The rooftop of the watchtower is shown, with the group standing in a circle around the stone pedestal. The storm rages on, creating an ominous atmosphere.",
+          "movement": null,
+          "narrative_purpose": "Geography and isolation/scale"
+        },
+        {
+          "shot_number": "S02",
+          "shot_type": "medium",
+          "lens_mm": null,
+          "description": "Elena, Kai, and Mira are shown in a tight shot. Elena is carefully placing the key into the stone pedestal while maintaining her composed demeanor.",
+          "movement": null,
+          "narrative_purpose": "Character objective: Elena"
+        },
+        {
+          "shot_number": "S03",
+          "shot_type": "close_up",
+          "lens_mm": null,
+          "description": "Close-up of the key being inserted into the stone pedestal. Lightning strikes nearby, casting dramatic shadows and enhancing the mystical atmosphere.",
+          "movement": null,
+          "narrative_purpose": "Visual objective: Dramatic shot with lightning"
+        },
+        {
+          "shot_number": "S04",
+          "shot_type": "medium",
+          "lens_mm": null,
+          "description": "Kai is shown using his flashlight to inspect the surroundings, noting any unusual activity or figures nearby.",
+          "movement": null,
+          "narrative_purpose": "Character objective: Kai"
+        },
+        {
+          "shot_number": "S05",
+          "shot_type": "close_up",
+          "lens_mm": null,
+          "description": "Close-up of Mira's face as she stands close to Elena, offering support and encouragement during the ritual. Her expression shows a mix of curiosity and determination.",
+          "movement": null,
+          "narrative_purpose": "Character objective: Mira"
+        },
+        {
+          "shot_number": "S06",
+          "shot_type": "cutaway",
+          "lens_mm": null,
+          "description": "A cutaway to a close-up of the stone pedestal, now glowing faintly with an ethereal light. The group's faces are visible in silhouette behind it.",
+          "movement": null,
+          "narrative_purpose": "Visual objective: Enhancing the mystical atmosphere"
+        },
+        {
+          "shot_number": "S07",
+          "shot_type": "pov",
+          "lens_mm": null,
+          "description": "A subjective viewpoint from Elena’s perspective, looking out at the stormy sky as she feels a sense of anticipation and trust within her group.",
+          "movement": null,
+          "narrative_purpose": "Mystical and tense tone"
         }
       ]
     }
@@ -212,16 +330,17 @@
     {
       "scene_number": 1,
       "shot_order": [
-        "S1W",
-        "S2M",
-        "S3CU",
-        "S4I",
-        "S5M",
-        "S6CU",
-        "S7W"
+        "S01-Wide (wide)",
+        "S02-Medium (medium)",
+        "S03-Close-up (close_up)",
+        "S04-Medium (medium)",
+        "S05-Close-up (close_up)",
+        "S06-Close-up (close_up)",
+        "S07-Wide (wide)",
+        "S08-Close-up (close_up)"
       ],
-      "pacing_notes": "The scene should start with a wide shot to establish the setting and Sarah's isolation, building tension through dim lighting. The medium shot of her taking out the letter serves as a turning point, leading into a close-up that reveals her conflicted emotions. An insert shot emphasizes the danger, followed by a medium shot showing her coping mechanism. The final close-up captures her emotional shift, and the wide shot at the end reinforces her vulnerability and isolation.",
-      "transitions_in_out": "The scene should begin with a hard cut from the wide shot to the medium shot of Sarah taking out the letter, creating an immediate sense of tension. It should end with a slow fade to black to leave the audience in suspense about what might happen next."
+      "pacing_notes": "Start with a wide shot to establish the setting and atmosphere. Hold this for a few seconds to let the golden hour light build a sense of isolation and tension. Transition into medium shots as the characters begin their journey, showing their interaction and leadership roles. Use close-ups to capture emotional moments: Mira's encouraging smile, Elena's determination, and Kai's support. As they reach the cabin, use wide shots to emphasize the shared goal and the beauty of the setting. End with a close-up that encapsulates their sense of accomplishment and camaraderie, holding it slightly longer to reinforce the emotional objective.",
+      "transitions_in_out": "Begin with a hard cut from the wide shot of S01 to maintain tension and engagement. Transition into S08-Close-up (close_up) with a slow fade-in to emphasize the sense of accomplishment and unity among the characters."
     },
     {
       "scene_number": 2,
@@ -235,24 +354,45 @@
         "S07",
         "S08"
       ],
-      "pacing_notes": "The scene should start with a wide shot to establish the setting and introduce the initial interaction between Marcus and Sarah. This will set a tense atmosphere through the raindrops on the window. The medium shots of Marcus approaching and examining the letter will gradually increase in tension, hinting at something significant. The close-ups of Sarah's hands and face will build curiosity and concern for her emotional state. As the scene progresses, the tension will escalate with each interaction between Marcus and Sarah, culminating in a wide shot that leaves the audience on high tension as they leave unresolved questions hanging.",
-      "transitions_in_out": "The scene should begin with a hard cut from the wide establishing shot to the medium shot of Marcus approaching. This transition is effective for quickly moving into the main action without losing the audience's attention. The scene ends with a slow fade to black, which will leave the audience in suspense and anticipation for what happens next."
+      "pacing_notes": "The scene should start with a wide shot to establish the setting and create an ominous atmosphere. The duration of this shot should be longer to let the tension build up as the sun sets, casting long shadows. Medium shots for Elena and Kai examining artifacts and symbols will add detail and character focus. Close-ups on the key and symbols will heighten curiosity and unease. A cutaway showing the group's reaction will create a sense of shared apprehension. The final wide shot should be held slightly longer to emphasize the mystery lingering as they leave, fading into darkness.",
+      "transitions_in_out": "The scene begins with a hard cut from the wide establishing shot to S02 to immediately engage the audience and set the mysterious tone. Each transition between shots should maintain this tense atmosphere, using quick edits for close-ups and medium shots to keep the audience engaged. The scene ends with a slow fade out on the wide shot of them exiting, reinforcing the sense of mystery that lingers."
+    },
+    {
+      "scene_number": 3,
+      "shot_order": [
+        "S01",
+        "S02",
+        "S03",
+        "S04",
+        "S05",
+        "S06",
+        "S07"
+      ],
+      "pacing_notes": "Start with a wide shot to establish the setting and create an ominous atmosphere. Transition into medium shots for character-specific moments, building tension through close-ups and dramatic lighting. Use cutaways to enhance the mystical atmosphere before concluding with Elena's POV to reinforce her trust in the group and anticipation of what's to come.",
+      "transitions_in_out": "Begin with a hard cut from S01 to S02 to immediately shift focus to the characters' actions. Maintain a steady cutting pace through S03, S04, and S05, then slow down for S06 to build anticipation. End the scene with a soft fade out on Elena's POV shot (S07) to leave a lingering sense of mystery."
     }
   ],
   "cinematography_critiques": [
     {
       "scene_number": 1,
       "stage": "cinematography",
-      "score": 7,
+      "score": 8,
       "passes": true,
-      "feedback": "The cinematography effectively establishes Sarah's emotional state of distress and hidden danger, aligning well with the Director's Intent Brief. However, there are a few areas where the shots could be more impactful to fully serve all objectives."
+      "feedback": "The cinematography effectively establishes the characters' bond and their shared goal, with a strong emphasis on the golden hour light. However, there are some areas where the choices could be more dynamic to fully serve all objectives. For instance, in S02, while it serves Elena's leadership well, consider adding a slight camera movement or a subtle reaction from Kai or Mira to enhance camaraderie. In S03 and S06, the close-ups of Mira are excellent for emotional connection but could benefit from a brief shot of her binoculars in use to reinforce her character objective. Additionally, in S07, while the wide shot is effective, consider incorporating a slight camera movement or a dolly-in to emphasize their shared journey towards the cabin. Overall, these adjustments would make the scene even more cohesive and engaging."
     },
     {
       "scene_number": 2,
       "stage": "cinematography",
-      "score": 7,
+      "score": 8,
       "passes": true,
-      "feedback": "The close-up shot of Sarah's trembling hands (S03) effectively serves the brief by revealing her emotional state and hinting at a secret. However, it could be more impactful if there were some subtle movement or camera angle changes to emphasize the tension further. For example, slightly tilting the camera to create an off-balance effect can add to the sense of unease. Additionally, consider adding a slight zoom in on her hands as she clutches the glass, which would draw more attention to this detail and reinforce the emotional intensity."
+      "feedback": "The close-up shot (S03) of the engraved silver key with light shining through it effectively serves the brief's visual objective and contributes to the mysterious atmosphere. However, there are a few areas for improvement to enhance its impact further. Consider adding a slight zoom or pan during the shot to draw more attention to the intricate details of the key. Additionally, you could slightly increase the contrast in the lighting to make the key glow even more subtly, which would reinforce the sense of discovery and mystery."
+    },
+    {
+      "scene_number": 3,
+      "stage": "cinematography",
+      "score": 8,
+      "passes": true,
+      "feedback": "The cinematography effectively establishes the mystical element of the story and sets up the group's quest. The wide shot in S01 successfully conveys the isolation and scale, while S03 and S06 enhance the mystical atmosphere with dramatic lighting and cutaways. However, there are a few areas for improvement to better align with the Director's Intent Brief."
     }
   ],
   "final_critiques": [
@@ -261,24 +401,31 @@
       "stage": "editing",
       "score": 7,
       "passes": true,
-      "feedback": "The artifact generally serves the brief well, but there are a few areas that could be improved for better alignment with the Director's Intent Brief. Here’s what to consider adjusting and why:"
+      "feedback": "The editing pipeline effectively establishes the bond between the characters and their shared goal, with a few areas for improvement. The pacing notes are well-thought-out and align closely with the Director's Intent Brief. However, there is room to enhance the emotional objective by making some transitions more fluid and ensuring that each shot serves its purpose more clearly."
     },
     {
       "scene_number": 2,
       "stage": "editing",
       "score": 7,
       "passes": true,
-      "feedback": "The editing pipeline effectively builds tension and curiosity through a well-structured shot order. However, there are some areas that could be refined to better align with the Director's Intent Brief."
+      "feedback": "The editing pipeline effectively establishes an ominous and mysterious atmosphere through a well-paced sequence. However, there are some areas that could be refined to better align with the Director's Intent Brief."
+    },
+    {
+      "scene_number": 3,
+      "stage": "editing",
+      "score": 8,
+      "passes": true,
+      "feedback": "The editing pipeline artifact effectively serves the Director's Intent Brief, but there are some areas for improvement to enhance its impact. Here’s a detailed breakdown of how it aligns with each objective and specific suggestions for refinement."
     }
   ],
   "cinematography_revision_count": 0,
   "max_revisions": 2,
   "log": [
-    "[Script Analyst] extracted 2 scenes",
-    "[Scene Design] wrote 2 intent briefs",
-    "[Cinematography] produced/updated 2 shot lists",
-    "[Critic] scored 2 shot lists",
-    "[Editing] assembled 2 scene sequences",
-    "[Critic] scored 2 edited sequences"
+    "[Script Analyst] extracted 3 scenes",
+    "[Scene Design] wrote 3 intent briefs",
+    "[Cinematography] produced/updated 3 shot lists",
+    "[Critic] scored 3 shot lists",
+    "[Editing] assembled 3 scene sequences",
+    "[Critic] scored 3 edited sequences"
   ]
 }
