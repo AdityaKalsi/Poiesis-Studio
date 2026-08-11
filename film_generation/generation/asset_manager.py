@@ -19,6 +19,8 @@ from pathlib import Path
 
 from film_generation.schemas import ShotPrompt
 
+# asset_manager.py
+
 
 def compute_cache_key(shot_prompt: ShotPrompt, model_backend: str, seed: int) -> str:
     payload = {

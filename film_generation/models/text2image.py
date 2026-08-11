@@ -87,11 +87,20 @@ def _generate_gemini(
         )
 
     candidate = response.candidates[0]
+    
+    # Catch NO_IMAGE explicitly to provide a better error message
+    if getattr(candidate.finish_reason, "name", candidate.finish_reason) == "NO_IMAGE":
+        raise GenerationBlockedError(
+            f"Gemini blocked the image generation (likely due to human face/person safety filters). "
+            f"Prompt: {prompt[:200]!r}"
+        )
+
     if candidate.finish_reason not in ("STOP", "MAX_TOKENS", None) or not candidate.content.parts:
         raise GenerationBlockedError(
             f"Gemini finished with reason={candidate.finish_reason!r}, no usable parts. "
             f"Prompt: {prompt[:200]!r}"
         )
+    
     for part in response.parts:
         if part.inline_data:
             return ImageResult(image_bytes=part.inline_data.data, mime_type=part.inline_data.mime_type)

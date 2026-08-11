@@ -81,6 +81,7 @@ def generate_shot_prompt(
         / f"shot_{shot.shot_number}_prompt.json"
     )
     json_path.parent.mkdir(parents=True, exist_ok=True)
+    
     json_path.write_text(shotprompt.model_dump_json(indent=2))
 
     return shotprompt

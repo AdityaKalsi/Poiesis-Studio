@@ -48,17 +48,7 @@ def generate_shot_image(
         else None
     )
 
-    result = text2image.generate_image(
-        shot_prompt.positive_prompt,
-        config,
-        reference_image_paths=use_refs,
-    )
-
-    cache_key = compute_cache_key(
-        shot_prompt,
-        config.models.text2image_backend,
-        seed,
-    )
+    cache_key = compute_cache_key(shot_prompt, config.models.text2image_backend, seed)
 
     image_path = assets.path_for(
         shot_prompt.scene_number,
@@ -67,6 +57,17 @@ def generate_shot_image(
         cache_key,
         "png",
     )
+
+    if assets.exists(image_path):
+        print(f"Cache hit: {image_path}")
+        return GeneratedImage.model_validate_json(image_path.with_suffix(".json").read_text())
+
+    result = text2image.generate_image(
+        shot_prompt.positive_prompt,
+        config,
+        reference_image_paths=use_refs,
+    )
+
     result.save(image_path)
 
     generated_image = GeneratedImage(

@@ -19,8 +19,8 @@ from film_generation.schemas import EntityState
 
 
 class ContinuityManager:
-    def __init__(self) -> None:
-        self._state: dict[str, EntityState] = {}
+    def __init__(self, initial_state: dict[str, EntityState] | None = None) -> None:
+        self._state: dict[str, EntityState] = dict(initial_state) if initial_state else {}
 
     # -- initialization -----------------------------------------------------
 
@@ -105,5 +105,4 @@ class ContinuityManager:
         )
 
     def snapshot(self) -> dict[str, EntityState]:
-        """Full state dump, useful for debugging/logging a run."""
         return dict(self._state)

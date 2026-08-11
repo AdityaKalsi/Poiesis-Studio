@@ -62,28 +62,52 @@ def load_completed_reasoning_state() -> ProjectState:
           f"(no LLM calls made)")
     return ProjectState(**existing.values)
 
+def load_completed_generation_state() -> GenerationState:
+    """Pull the finished GenerationState straight out of generation.db.
+    Does NOT invoke the graph -- zero LLM calls happen here."""
+    graph = build_generation_graph()
+    thread_config = {"configurable": {"thread_id": TEST_THREAD_ID}}
+
+    existing = graph.get_state(thread_config)
+    if existing is None or not existing.values:
+        sys.exit(
+            f"No checkpoint found for thread_id={REASONING_THREAD_ID!r} in "
+            f"reasoning.db -- run the reasoning pipeline first, or fix "
+            f"REASONING_THREAD_ID above to match what run_movie.py used."
+        )
+    if existing.next:
+        sys.exit(
+            f"Checkpoint for {REASONING_THREAD_ID!r} is incomplete "
+            f"(pending nodes: {existing.next}) -- this test expects a "
+            f"fully finished reasoning run."
+        )
+
+    print(f"[Reasoning] loaded completed checkpoint for thread_id={REASONING_THREAD_ID!r} "
+          f"(no LLM calls made)")
+    return ProjectState(**existing.values)
+
 def run_reasoning_stage(script_path: str) -> ProjectState:
 
     script_text = Path(script_path).read_text()
 
-    reasoning_graph = build_reasoning_graph()
+    graph = build_reasoning_graph()
 
     print(f"[1/2] Reasoning pipeline running on: {script_path}\n{'=' * 60}")
 
-    final_reasoning_state = reasoning_graph.invoke(ProjectState(script_text=script_text), config={
+    final_state_dict = graph.invoke(ProjectState(script_text=script_text), config={
         "configurable": {
             "thread_id": "movie_001"
         }
     })
 
     # Save the final state to a JSON file
-    final_state = ProjectState(**final_reasoning_state)
+    final_state = ProjectState(**final_state_dict)
     out_path = Path("output.json")
     out_path.write_text(final_state.model_dump_json(indent=2))
     print(f"Reasoning output written to {out_path.resolve()}\n")
 
     # Visualize LangGraph
-    png = reasoning_graph.get_graph().draw_mermaid_png()
+    png = graph.get_graph().draw_mermaid_png()
     with open("reasoning_graph.png", "wb") as f:
         f.write(png)
     print("Graph saved as reasoning_graph.png")
@@ -94,43 +118,86 @@ def run_reasoning_stage(script_path: str) -> ProjectState:
 def run_generation_stage(project_state: ProjectState):
     print(f"[2/2] Generation pipeline running (calls paid image/video APIs)\n{'=' * 60}")
     config = load_config()
-    
-    return run_generation(project_state, config)
+    # resume=True: if a checkpoint already exists for this thread_id, continue
+    # from it instead of re-running the whole graph. run_generation() checks
+    # for an actual checkpoint before trusting this, so it's also safe on a
+    # cold start (first-ever run just proceeds normally).
+    return run_generation(project_state, config, resume=False)
+
+
 
 
 def main() -> None:
     script_path = sys.argv[1] if len(sys.argv) > 1 else "sample_script.txt"
 
-    #final_resoning_state = run_reasoning_stage(script_path)
-    final_resoning_state = load_completed_reasoning_state()
-    
-    print("[Adapter] building GenerationState from the loaded ProjectState...")
-    #initial_state = build_generation_state(final_resoning_state)
+    # ---------------------------------------------------------
+    # 1. LOAD COMPLETED REASONING CHECKPOINT
+    # ---------------------------------------------------------
 
-    if not final_resoning_state.breakdown or not final_resoning_state.shot_lists:
-        print("Reasoning pipeline produced no usable breakdown/shot lists -- "
-              "stopping before generation (nothing to generate from).")
+    print("\n" + "=" * 60)
+    print("RESUMING FROM REASONING CHECKPOINT")
+    print("=" * 60)
+
+    project_state = load_completed_reasoning_state()
+
+    # ---------------------------------------------------------
+    # 2. ADAPTER
+    # ---------------------------------------------------------
+
+    print(
+        "\n[Adapter] Building GenerationState "
+        "from the loaded ProjectState..."
+    )
+
+    initial_state = build_generation_state(project_state)
+
+    # ---------------------------------------------------------
+    # 3. VALIDATE REASONING OUTPUT
+    # ---------------------------------------------------------
+
+    if not project_state.breakdown or not project_state.shot_lists:
+        print(
+            "Reasoning checkpoint contains no usable "
+            "breakdown/shot lists -- stopping."
+        )
         sys.exit(1)
 
-    final_gen_state = run_generation_stage(final_resoning_state)
+    # ---------------------------------------------------------
+    # 4. GENERATION
+    # ---------------------------------------------------------
 
+    final_gen_state = run_generation_stage(project_state)
 
-    # Write the complete generation stage state to a JSON file
+    # ---------------------------------------------------------
+    # 5. SAVE GENERATION OUTPUT
+    # ---------------------------------------------------------
+
     gen_out_path = Path("generation_output.json")
-    gen_out_path.write_text(final_gen_state.model_dump_json(indent=2))
-    print(f"Generation output written to {gen_out_path.resolve()}\n")
+
+    gen_out_path.write_text(
+        final_gen_state.model_dump_json(indent=2)
+    )
+
+    print(
+        f"Generation output written to "
+        f"{gen_out_path.resolve()}\n"
+    )
+
     print("\n" + "=" * 60)
+
     for line in final_gen_state.log:
         print(f"  {line}")
 
-    # Visualize LangGraph
-    
-
     if final_gen_state.final_movie_path:
-        print(f"\nDone. Final movie: {final_gen_state.final_movie_path}")
+        print(
+            f"\nDone. Final movie: "
+            f"{final_gen_state.final_movie_path}"
+        )
     else:
-        print("\nGeneration pipeline finished but final_movie_path was never "
-              "set -- check the log above for where it stopped.")
+        print(
+            "\nGeneration pipeline finished but "
+            "final_movie_path was never set."
+        )
 
 
 if __name__ == "__main__":

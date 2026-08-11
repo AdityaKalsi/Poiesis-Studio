@@ -28,7 +28,7 @@ def generate_character_reference(
     print(f"Generating character reference for {character_name}...")
 
     prompt = (
-        f"A single clean character reference portrait of {character_name}. "
+        f"A single clean fictional sci-fi character reference portrait of {character_name}. "
         f"{description}. Neutral studio background, front-facing, natural "
         f"lighting, high detail, consistent likeness for reuse as a "
         f"reference image across many shots."

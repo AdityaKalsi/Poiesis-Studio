@@ -44,7 +44,7 @@ def build_generation_state(project_state: ProjectState) -> GenerationState:
 
     return GenerationState(
         project_title=project_state.breakdown.title,
-        continuity=continuity,
+        continuity=continuity.snapshot(),
         log=[
             f"[Adapter] seeded continuity with {len(seen_characters)} characters, "
             f"{len(seen_props)} props from reasoning output"

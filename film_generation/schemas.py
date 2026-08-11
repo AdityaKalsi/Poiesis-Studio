@@ -151,7 +151,10 @@ class GenerationState(BaseModel):
     # Live ContinuityManager instance (see generation/continuity_manager.py).
     # Typed as Any to avoid a schemas.py -> generation/ circular import;
     # always a ContinuityManager at runtime.
-    continuity: Optional[Any] = None
+
+    continuity: dict[str, EntityState] = Field(default_factory=dict)
+
+    
 
     class Config:
         arbitrary_types_allowed = True

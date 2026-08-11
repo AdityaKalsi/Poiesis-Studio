@@ -49,8 +49,11 @@ from film_generation.models import image2video as i2v_module
 from film_generation.generation.asset_manager import AssetManager
 from film_generation.generation.prompt_generator import generate_shot_prompt
 from film_generation.schemas import GenerationState
+from film_generation.generation.continuity_manager import ContinuityManager 
 import sqlite3
 from langgraph.checkpoint.sqlite import SqliteSaver
+from langgraph.checkpoint.serde.jsonplus import JsonPlusSerializer
+
 
 
 def build_generation_graph(project_state: ProjectState, config: GenerationConfig):
@@ -67,6 +70,7 @@ def build_generation_graph(project_state: ProjectState, config: GenerationConfig
     def node_character_reference(state: GenerationState) -> dict:
         print(f"[Character Reference] Generating references for {len(project_state.breakdown.scenes)} scenes")
         refs = dict(state.character_refs)
+        
         for scene in project_state.breakdown.scenes:
             for character in scene.cast:
                 if character in refs:
@@ -104,7 +108,7 @@ def build_generation_graph(project_state: ProjectState, config: GenerationConfig
         }
 
     def node_prompt_generation(state: GenerationState) -> dict:
-        print(f"[Prompt Generation] Generating prompts for {len(shot_list_by_scene)} scenes")
+        print(f"[Prompt Generation] Generating prompts for scenes")
         failing_feedback = {
             f"{c.scene_number}-{c.shot_number}": c.feedback
             for c in state.visual_critiques
@@ -112,6 +116,7 @@ def build_generation_graph(project_state: ProjectState, config: GenerationConfig
         }
         prompts = []
         revision_counts = dict(state.shot_revision_counts)
+        continuity = ContinuityManager(state.continuity)
         for scene_number, shot_list in shot_list_by_scene.items():
             brief = brief_by_scene[scene_number]
             cast = characters_in_scene(project_state, scene_number)
@@ -137,7 +142,7 @@ def build_generation_graph(project_state: ProjectState, config: GenerationConfig
                     brief=brief,
                     character_refs=state.character_refs,
                     scene_anchor=anchor,
-                    continuity=state.continuity,
+                    continuity=continuity,
                     cast=cast,
                     props=props,
                     prior_feedback=prior_feedback,
@@ -294,30 +299,54 @@ def build_generation_graph(project_state: ProjectState, config: GenerationConfig
     graph.add_edge("cut_planning", "video_editing")
     graph.add_edge("video_editing", END)
 
-    conn = sqlite3.connect("generation_checkpoint.db", check_same_thread=False)
-    checkpointer = SqliteSaver(conn)
-
+    serializer = JsonPlusSerializer(
+        allowed_msgpack_modules=[
+            ("film_agents.schemas", "GenerationState"),
+            ("film_agents.schemas", "CharacterReference"),
+            ("film_agents.schemas", "SceneAnchor"),
+            ("film_agents.schemas", "ShotPrompt"),
+            ("film_agents.schemas", "GeneratedImage"),
+            ("film_agents.schemas", "VisualCritique"),
+            ("film_agents.schemas", "GeneratedClip"),
+            ("film_agents.schemas", "EditDecisionList"),
+        ]
+    )   
+    conn = sqlite3.connect(database='generation.db', check_same_thread=False)
+    checkpointer = SqliteSaver(conn=conn,serde=serializer)
     return graph.compile(checkpointer=checkpointer)
 
 
-def run_generation(project_state: ProjectState, config: GenerationConfig | None = None):
-    
+def run_generation(
+    project_state: ProjectState,
+    config: GenerationConfig | None = None,
+    resume: bool = False,
+    thread_id: str = "percy_jackson",
+):
+    if config is None:
+        config = load_config()
 
-    config = load_config()
-
-    initial_state = build_generation_state(project_state)
     graph = build_generation_graph(project_state, config)
-    config = {
-    "configurable": {
-        "thread_id": "percy_jackson"
-        }
-    } 
+    thread_config = {"configurable": {"thread_id": thread_id}}
 
-    final_state_dict = graph.invoke(initial_state, config=config)
+    existing = graph.get_state(thread_config)
+    has_checkpoint = existing is not None and bool(existing.values)
+
+    print(f"Resume requested: {resume} | checkpoint found: {has_checkpoint} | thread_id: {thread_id}")
+
+    if resume and has_checkpoint:
+        # None as input tells LangGraph "don't overwrite state, just continue
+        # the existing thread from its last saved checkpoint."
+        final_state_dict = graph.invoke(None, config=thread_config)
+    else:
+        if resume and not has_checkpoint:
+            print("  -> resume=True but no checkpoint exists for this thread_id; starting fresh.")
+        initial_state = build_generation_state(project_state)
+        final_state_dict = graph.invoke(initial_state, config=thread_config)
+
     png = graph.get_graph().draw_mermaid_png()
-            
+
     with open("generation_graph.png", "wb") as f:
-            f.write(png)
-            
+        f.write(png)
+
     print("Graph saved as generation_graph.png")
     return GenerationState(**final_state_dict)

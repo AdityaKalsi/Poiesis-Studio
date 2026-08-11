@@ -11,10 +11,15 @@ rendering, no sound, no VFX yet. The point of this prototype is to prove
 the *reasoning* pipeline works before spending anything on generation.
 """
 
+from envs.env.Lib import sqlite3
 from langgraph.graph import StateGraph, END
 
 from film_agents.schemas import ProjectState
 from film_agents import agents
+import sqlite3
+from langgraph.checkpoint.sqlite import SqliteSaver
+from langgraph.checkpoint.serde.jsonplus import JsonPlusSerializer
+
 
 
 def node_script_analyst(state: ProjectState) -> dict:
@@ -143,5 +148,18 @@ def build_reasoning_graph():
 
     graph.add_edge("editing", "final_critic")
     graph.add_edge("final_critic", END)
+    serializer = JsonPlusSerializer(
+    allowed_msgpack_modules=[
+        ("film_agents.schemas", "SceneIntentBrief"),
+        ("film_agents.schemas", "SceneBreakdown"),
+        ("film_agents.schemas", "ShotList"),
+        ("film_agents.schemas", "Shot"),
+        ("film_agents.schemas", "CritiqueReport"),
+        ("film_agents.schemas", "EditedSequence"),
+    ]
+    )
+    conn = sqlite3.connect(database='reasoning.db', check_same_thread=False)
+    # Checkpointer
+    checkpointer = SqliteSaver(conn=conn,serde=serializer)
 
-    return graph.compile()
+    return graph.compile(checkpointer=checkpointer)

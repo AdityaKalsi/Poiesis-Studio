@@ -49,6 +49,8 @@ def animate(
         arguments={
             "image_url": image_url,
             "prompt": motion_prompt,
+            "duration": duration_seconds or config.defaults.default_clip_seconds,
+            "resolution": "720p",
         },
     )
 
