@@ -38,7 +38,9 @@ def generate_shot_prompt(
     prior_feedback: str | None = None,
     assets: AssetManager | None = None,
 ) -> ShotPrompt:
+    
     print(f"Generating prompt for scene {scene_number}, shot {shot.shot_number}")
+    
     shot_language = SHOT_TYPE_LANGUAGE.get(shot.shot_type, shot.shot_type)
     lighting = lighting_hint_for_tone(brief.tone)
     lens = lens_hint(shot.lens_mm)

@@ -9,7 +9,7 @@ through the adapter (see adapter.py), never share state objects directly.
 """
 
 from __future__ import annotations
-from typing import Any, Literal, Optional
+from typing import Any, Literal, Optional, Annotated
 from pydantic import BaseModel, Field
 
 from film_generation.config import TransitionType
@@ -18,6 +18,9 @@ from film_generation.config import TransitionType
 # ---------------------------------------------------------------------------
 # Identity / environment references
 # ---------------------------------------------------------------------------
+def merge_dicts(a: dict, b: dict) -> dict:
+    return {**a, **b}
+
 
 class CharacterReference(BaseModel):
     character_name: str
@@ -133,7 +136,7 @@ class EditDecisionList(BaseModel):
 class GenerationState(BaseModel):
     project_title: str
 
-    character_refs: dict[str, CharacterReference] = Field(default_factory=dict)
+    character_refs: Annotated[dict[str, CharacterReference],merge_dicts] = Field(default_factory=dict)
     scene_anchors: dict[int, SceneAnchor] = Field(default_factory=dict)
 
     shot_prompts: list[ShotPrompt] = Field(default_factory=list)

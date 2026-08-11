@@ -13,7 +13,7 @@ as film_agents/graph.py's node_cinematography), rather than one shot per
 graph step -- keeps the graph shape identical to the reasoning pipeline's
 and keeps per-node LLM/model call batching efficient.
 
-project_state (reasoning pipeline output) and config are closed over via
+reasoning_state (reasoning pipeline output) and config are closed over via
 build_generation_graph() rather than stored in GenerationState, since
 they're read-only for the duration of a generation run -- only
 GenerationState (schemas.py) is meant to be graph-mutable state.
@@ -29,8 +29,10 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from langgraph.graph import StateGraph, END
+from langgraph import graph
+from langgraph.graph import StateGraph, START,END
 from pydantic import config
+from langgraph.types import Send
 
 
 from film_agents.schemas import ProjectState
@@ -56,44 +58,68 @@ from langgraph.checkpoint.serde.jsonplus import JsonPlusSerializer
 
 
 
-def build_generation_graph(project_state: ProjectState, config: GenerationConfig):
+def build_generation_graph(reasoning_state: ProjectState, config: GenerationConfig):
 
-    brief_by_scene = {b.scene_number: b for b in project_state.intent_briefs}
-    scene_by_num = {s.scene_number: s for s in project_state.breakdown.scenes}
-    shot_list_by_scene = {sl.scene_number: sl for sl in project_state.shot_lists}
-    edited_seq_by_scene = {seq.scene_number: seq for seq in project_state.edited_sequences}
+    brief_by_scene = {b.scene_number: b for b in reasoning_state.intent_briefs}
+    scene_by_num = {s.scene_number: s for s in reasoning_state.breakdown.scenes}
+    shot_list_by_scene = {sl.scene_number: sl for sl in reasoning_state.shot_lists}
+    edited_seq_by_scene = {seq.scene_number: seq for seq in reasoning_state.edited_sequences}
 
     assets = AssetManager(config.output_dir)
 
     # -- nodes ----------------------------------------------------------
-
-    def node_character_reference(state: GenerationState) -> dict:
-        print(f"[Character Reference] Generating references for {len(project_state.breakdown.scenes)} scenes")
-        refs = dict(state.character_refs)
-        
-        for scene in project_state.breakdown.scenes:
+    def route_to_character_refs(state: GenerationState):
+        characters_to_generate: dict[str, str] = {}
+        for scene in reasoning_state.breakdown.scenes:
+            description = ", ".join(scene.wardrobe_notes) or "no description available"
             for character in scene.cast:
-                if character in refs:
+                if character in state.character_refs:
                     continue
-                description=", ".join(scene.wardrobe_notes) or "no description available"
-                print(description)
-                ref = char_ref_module.generate_character_reference(
-                    character_name=character,
-                    description=description,
-                    config=config,
-                    assets=assets,
-                )
-                refs[character] = ref
-        print("\n" + "="*80 + "\n")
-        return {
-            "character_refs": refs,
-            "log": state.log + [f"[Character Reference] {len(refs)} characters resolved"],
-        }
+                if character not in characters_to_generate:
+                    characters_to_generate[character] = description
+        if not characters_to_generate:
+            return "scene_anchor"  # nothing to do, skip straight through
+        return [
+            Send("generate_character_reference", {"character_name": c, "description": d})
+            for c, d in characters_to_generate.items()
+        ]
+
+    def node_generate_character_reference(payload: dict) -> dict:
+        ref = char_ref_module.generate_character_reference(
+            character_name=payload["character_name"],
+            description=payload["description"],
+            config=config,
+            assets=assets,
+        )
+        return {"character_refs": {payload["character_name"]: ref}}
+
+    # def node_character_reference(state: GenerationState) -> dict:
+    #     print(f"[Character Reference] Generating references for {len(reasoning_state.breakdown.scenes)} scenes")
+    #     refs = dict(state.character_refs)
+        
+    #     for scene in reasoning_state.breakdown.scenes:
+    #         for character in scene.cast:
+    #             if character in refs:
+    #                 continue
+    #             description=", ".join(scene.wardrobe_notes) or "no description available"
+    #             print(description)
+    #             ref = char_ref_module.generate_character_reference(
+    #                 character_name=character,
+    #                 description=description,
+    #                 config=config,
+    #                 assets=assets,
+    #             )
+    #             refs[character] = ref
+    #     print("\n" + "="*80 + "\n")
+    #     return {
+    #         "character_refs": refs,
+    #         "log": state.log + [f"[Character Reference] {len(refs)} characters resolved"],
+    #     }
 
     def node_scene_anchor(state: GenerationState) -> dict:
-        print(f"[Scene Anchor] Generating anchors for {len(project_state.breakdown.scenes)} scenes")
+        print(f"[Scene Anchor] Generating anchors for {len(reasoning_state.breakdown.scenes)} scenes")
         anchors = dict(state.scene_anchors)
-        for scene in project_state.breakdown.scenes:
+        for scene in reasoning_state.breakdown.scenes:
             if scene.scene_number in anchors:
                 continue
             brief = brief_by_scene[scene.scene_number]
@@ -119,8 +145,8 @@ def build_generation_graph(project_state: ProjectState, config: GenerationConfig
         continuity = ContinuityManager(state.continuity)
         for scene_number, shot_list in shot_list_by_scene.items():
             brief = brief_by_scene[scene_number]
-            cast = characters_in_scene(project_state, scene_number)
-            props = props_in_scene(project_state, scene_number)
+            cast = characters_in_scene(reasoning_state, scene_number)
+            props = props_in_scene(reasoning_state, scene_number)
             anchor = state.scene_anchors.get(scene_number)
             for shot in shot_list.shots:
                 key = f"{scene_number}-{shot.shot_number}"
@@ -149,7 +175,7 @@ def build_generation_graph(project_state: ProjectState, config: GenerationConfig
                     assets=assets
                 )
                 prompts.append(prompt)
-        print(f"[Prompt Generation] {prompts} prompts generated for {len(prompts)} shots")
+        print(f"[Prompt Generation] Completed")
         print("\n" + "="*80 + "\n")
         return {
             "shot_prompts": prompts,
@@ -273,8 +299,7 @@ def build_generation_graph(project_state: ProjectState, config: GenerationConfig
 
 
     graph = StateGraph(GenerationState)
-
-    graph.add_node("character_reference", node_character_reference)
+    graph.add_node("generate_character_reference", node_generate_character_reference)
     graph.add_node("scene_anchor", node_scene_anchor)
     graph.add_node("prompt_generation", node_prompt_generation)
     graph.add_node("shot_generation", node_shot_generation)
@@ -283,8 +308,8 @@ def build_generation_graph(project_state: ProjectState, config: GenerationConfig
     graph.add_node("cut_planning", node_cut_planning)
     graph.add_node("video_editing", node_video_editing)
 
-    graph.set_entry_point("character_reference")
-    graph.add_edge("character_reference", "scene_anchor")
+    graph.add_conditional_edges(START, route_to_character_refs, ["generate_character_reference", "scene_anchor"])
+    graph.add_edge("generate_character_reference", "scene_anchor")
     graph.add_edge("scene_anchor", "prompt_generation")
     graph.add_edge("prompt_generation", "shot_generation")
     graph.add_edge("shot_generation", "visual_critic")
@@ -317,7 +342,7 @@ def build_generation_graph(project_state: ProjectState, config: GenerationConfig
 
 
 def run_generation(
-    project_state: ProjectState,
+    reasoning_state: ProjectState,
     config: GenerationConfig | None = None,
     resume: bool = False,
     thread_id: str = "percy_jackson",
@@ -325,28 +350,29 @@ def run_generation(
     if config is None:
         config = load_config()
 
-    graph = build_generation_graph(project_state, config)
+    graph = build_generation_graph(reasoning_state, config)
     thread_config = {"configurable": {"thread_id": thread_id}}
 
     existing = graph.get_state(thread_config)
     has_checkpoint = existing is not None and bool(existing.values)
 
-    print(f"Resume requested: {resume} | checkpoint found: {has_checkpoint} | thread_id: {thread_id}")
+    print(f"[Generation] Resume requested: {resume} | checkpoint found: {has_checkpoint} "
+          f"| thread_id: {thread_id!r}")
+    if has_checkpoint:
+        print(f"[Generation] checkpoint pending nodes: {existing.next}")
 
     if resume and has_checkpoint:
-        # None as input tells LangGraph "don't overwrite state, just continue
-        # the existing thread from its last saved checkpoint."
-        final_state_dict = graph.invoke(None, config=thread_config)
+        # None input = "don't overwrite state, continue from last checkpoint"
+        final_gen_state = graph.invoke(None, config=thread_config)
     else:
         if resume and not has_checkpoint:
-            print("  -> resume=True but no checkpoint exists for this thread_id; starting fresh.")
-        initial_state = build_generation_state(project_state)
-        final_state_dict = graph.invoke(initial_state, config=thread_config)
+            print("[Generation] resume=True but no checkpoint exists for this "
+                  "thread_id; starting fresh.")
+        initial_gen_state = build_generation_state(reasoning_state)
+        final_gen_state = graph.invoke(initial_gen_state, config=thread_config)
 
     png = graph.get_graph().draw_mermaid_png()
-
     with open("generation_graph.png", "wb") as f:
         f.write(png)
-
     print("Graph saved as generation_graph.png")
-    return GenerationState(**final_state_dict)
+    return GenerationState(**final_gen_state)

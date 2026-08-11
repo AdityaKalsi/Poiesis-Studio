@@ -56,6 +56,5 @@ def generate_character_reference(
     json_path = character_dir / f"{character_name.replace(' ', '_')}.json"
     json_path.write_text(character_reference.model_dump_json(indent=2))
 
-    print(f"Character reference written to {json_path.resolve()}")
 
     return character_reference

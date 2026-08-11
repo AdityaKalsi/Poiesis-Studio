@@ -1,9 +1,0 @@
-{
-  "character_name": "ELENA",
-  "description": "Determined look for Elena, rugged appearance for Kai, curious demeanor for Mira",
-  "reference_image_path": "film_generation\\outputs\\characters\\ELENA.png",
-  "identity_payload_path": "film_generation\\outputs\\characters\\ELENA.png",
-  "identity_payload_kind": "image",
-  "seed": null,
-  "approved": false
-}
