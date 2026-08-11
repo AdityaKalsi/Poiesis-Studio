@@ -22,6 +22,10 @@ from pathlib import Path
 from huggingface_hub import InferenceClient
 import io
 from film_generation.config import GenerationConfig
+from google.genai import types
+import time
+from google import genai
+from google.genai.errors import ServerError
 
 
 @dataclass
@@ -47,11 +51,12 @@ def _generate_gemini(
     prompt: str,
     config: GenerationConfig,
     reference_image_paths: list[str] | None = None,
+    max_retries: int = 3,
 ) -> ImageResult:
-    from google import genai
-    from google.genai import types
     print("\n" + "="*80 + "\n")
     print(f"[Gemini] Generating image")
+
+
     api_key = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
     if not api_key:
         raise RuntimeError(
@@ -69,12 +74,22 @@ def _generate_gemini(
             mime_type="image/png",
         ))
     contents.append(prompt)
+
+    delay = 2  # starting delay in seconds
+    for attempt in range(max_retries):
+        try:
+               response = client.models.generate_content(
+                       model=config.models.gemini_image_model,
+                       contents=contents,
+                       config=types.GenerateContentConfig(response_modalities=["IMAGE"]),
+                   )
+               return response
+        except ServerError as e:
+               print(f"Attempt {attempt + 1} hit Google 500 error. Retrying in {delay} seconds...")
+               time.sleep(delay)
+               delay *= 2  # Exponential backoff
     
-    response = client.models.generate_content(
-        model=config.models.gemini_image_model,
-        contents=contents,
-        config=types.GenerateContentConfig(response_modalities=["IMAGE"]),
-    )
+    
 
     # Gemini returns candidates=[] (and .parts=None) on safety blocks or
     # empty generations -- never assume .parts is iterable.
