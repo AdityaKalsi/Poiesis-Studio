@@ -45,11 +45,11 @@ class ModelConfig(BaseModel):
 
     text2image_backend: Literal["gemini", "huggingface"] = "gemini"
     huggingface_text2image_model: str = "black-forest-labs/FLUX.1-dev"
-    gemini_image_model: str = "gemini-2.5-flash-image"
+    gemini_image_model: str = "gemini-3.5-flash-lite"
 
     image2video_fal_model: str = "fal-ai/wan-25-preview/image-to-video"
 
-    vlm_backend: str = "gemini-2.5-flash-lite"
+    vlm_backend: str = "gemini-3.5-flash-lite"
 
 class ConsistencyConfig(BaseModel):
     strategy: ConsistencyStrategy = "reference_image"
@@ -68,6 +68,17 @@ class RetryConfig(BaseModel):
         default=2,
         description="Mirrors ProjectState.max_revisions in the reasoning pipeline -- same retry-budget philosophy",
     )
+    max_shot_generation_retries: int = Field(
+        default=2,
+        description=(
+            "Cap on retries for shots that fail at the generation stage itself "
+            "(Gemini safety block, prohibited content, recitation, no image "
+            "returned, etc.) -- tracked via ShotGenerationFailure.attempt_count. "
+            "Separate budget from max_shot_revisions, which only counts "
+            "critic-driven revisions on images that did generate."
+        ),
+    )
+
 
 
 class BudgetConfig(BaseModel):

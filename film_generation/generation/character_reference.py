@@ -24,8 +24,7 @@ def generate_character_reference(
     config: GenerationConfig,
     assets: AssetManager,
 ) -> CharacterReference:
-    
-    print(f"Generating character reference for {character_name}...")
+    """Generate a single reference image for one character, and save it"""
 
     prompt = (
         f"A single clean fictional sci-fi character reference portrait of {character_name}. "

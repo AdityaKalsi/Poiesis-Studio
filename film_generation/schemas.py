@@ -13,7 +13,7 @@ from typing import Any, Literal, Optional, Annotated
 from pydantic import BaseModel, Field
 
 from film_generation.config import TransitionType
-
+import operator
 
 # ---------------------------------------------------------------------------
 # Identity / environment references
@@ -107,7 +107,12 @@ class GeneratedClip(BaseModel):
     duration_seconds: float
     model_backend: str
 
-
+class ShotGenerationFailure(BaseModel):
+    scene_number: int
+    shot_number: str
+    reason_code: Optional[str] = None   # None == resolved/cleared, see note below
+    raw_message: str = ""
+    attempt_count: int = 0
 # ---------------------------------------------------------------------------
 # Editing
 # ---------------------------------------------------------------------------
@@ -136,25 +141,26 @@ class EditDecisionList(BaseModel):
 class GenerationState(BaseModel):
     project_title: str
 
-    character_refs: Annotated[dict[str, CharacterReference],merge_dicts] = Field(default_factory=dict)
-    scene_anchors: dict[int, SceneAnchor] = Field(default_factory=dict)
-
+     # -- fields written by parallel Send tasks: MUST have a merge reducer --
+    character_refs: Annotated[dict[str, CharacterReference], merge_dicts] = Field(default_factory=dict)
+    scene_anchors: Annotated[dict[int, SceneAnchor], merge_dicts] = Field(default_factory=dict)
+    generated_images: Annotated[list[GeneratedImage], operator.add] = Field(default_factory=list)
+    shot_generation_failures: Annotated[dict[str, ShotGenerationFailure], merge_dicts] = Field(default_factory=dict)
+    visual_critiques: Annotated[list[VisualCritique], operator.add] = Field(default_factory=list)
+    generated_clips: Annotated[list[GeneratedClip], operator.add] = Field(default_factory=list)
+    generation_call_count: Annotated[int, operator.add] = 0
+    
+        # -- fields written by exactly one (batch) node invocation per step --
     shot_prompts: list[ShotPrompt] = Field(default_factory=list)
-    generated_images: list[GeneratedImage] = Field(default_factory=list)
-    visual_critiques: list[VisualCritique] = Field(default_factory=list)
-    generated_clips: list[GeneratedClip] = Field(default_factory=list)
     edit_decision_lists: list[EditDecisionList] = Field(default_factory=list)
-
     shot_revision_counts: dict[str, int] = Field(default_factory=dict)  # key: "scene-shot"
-    generation_call_count: int = 0
-
+    
     final_movie_path: Optional[str] = None
     log: list[str] = Field(default_factory=list)
-
-    # Live ContinuityManager instance (see generation/continuity_manager.py).
-    # Typed as Any to avoid a schemas.py -> generation/ circular import;
-    # always a ContinuityManager at runtime.
-
+    
+        # Live ContinuityManager instance (see generation/continuity_manager.py).
+        # Typed as Any to avoid a schemas.py -> generation/ circular import;
+        # always a ContinuityManager at runtime.
     continuity: dict[str, EntityState] = Field(default_factory=dict)
 
     

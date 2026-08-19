@@ -18,9 +18,10 @@ from __future__ import annotations
 
 import os
 from pathlib import Path
-
+import time
+from google.genai.errors import ServerError
 from pydantic import BaseModel, Field
-
+from typing import Union
 from film_agents.schemas import SceneIntentBrief
 from film_generation.config import GenerationConfig
 from film_generation.schemas import CharacterReference, GeneratedImage, VisualCritique
@@ -55,13 +56,14 @@ class _CritiqueOutput(BaseModel):
 
 def critique_shot_image(
     image: GeneratedImage,
-    brief: SceneIntentBrief,
+    brief: SceneIntentBrief | dict,
     character_refs: dict[str, CharacterReference],
     config: GenerationConfig,
+    max_retries: int = 3,
 ) -> VisualCritique:
     from google import genai
     from google.genai import types
-    
+    print(f"[Visual Critic] scoring shot {image.scene_number}.{image.shot_number} against brief and character reference(s)")
     api_key = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
     if not api_key:
         raise RuntimeError("GEMINI_API_KEY (or GOOGLE_API_KEY) is not set -- required for the visual critic.")
@@ -71,8 +73,8 @@ def critique_shot_image(
     relevant_refs = [
         character_refs[name] for name in image.prompt_used.character_ref_ids if name in character_refs
     ]
-    print(f"Critiquing shot image for scene {image.scene_number}, shot {image.shot_number} with {relevant_refs} character references...")
-
+    if isinstance(brief, dict):
+        brief = SceneIntentBrief.model_validate(brief)
     brief_text = (
         f"Director's Intent Brief:\n"
         f"- Purpose: {brief.purpose}\n"
@@ -86,18 +88,29 @@ def critique_shot_image(
     for ref in relevant_refs:
         contents.append(types.Part.from_bytes(data=Path(ref.reference_image_path).read_bytes(), mime_type="image/png"))
     contents.append(brief_text)
-    response = client.models.generate_content(
-        model=config.models.vlm_backend,
-        contents=contents,
-        config=types.GenerateContentConfig(
-            system_instruction=CRITIC_INSTRUCTIONS,
-            response_mime_type="application/json",
-            response_schema=_CritiqueOutput,
-        ),
-    )
+    delay = 2
+    response = None
+    for attempt in range(max_retries):
+        try:
+            response = client.models.generate_content(
+                model=config.models.vlm_backend,
+                contents=contents,
+                config=types.GenerateContentConfig(
+                    system_instruction=CRITIC_INSTRUCTIONS,
+                    response_mime_type="application/json",
+                    response_schema=_CritiqueOutput,
+                ),
+            )
+            break
+        except ServerError as e:
+            print(f"[Visual Critic] attempt {attempt + 1} hit server error ({e}). Retrying in {delay}s...")
+            time.sleep(delay)
+            delay *= 2
+
+    if response is None:
+        raise RuntimeError(f"Visual critic got no response after {max_retries} attempts for shot {image.scene_number}-{image.shot_number}")
 
     result: _CritiqueOutput = response.parsed
-    print(f"Critique result for scene {image.scene_number}, shot {image.shot_number}: {result}")
     passes = result.passes_brief and (
         not relevant_refs or result.identity_match_confidence >= config.consistency.identity_similarity_threshold
     )

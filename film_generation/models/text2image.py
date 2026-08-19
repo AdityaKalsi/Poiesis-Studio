@@ -38,10 +38,12 @@ class ImageResult:
         path.write_bytes(self.image_bytes)
         return path
 
-
 class GenerationBlockedError(RuntimeError):
     """Raised when the image generator returns a blocked or unusable result."""
 
+    def __init__(self, message: str, reason_code: str = "UNKNOWN"):
+        super().__init__(message)
+        self.reason_code = reason_code  # e.g. IMAGE_SAFETY, NO_IMAGE, STOP_NO_IMAGE, SAFETY...
 
 # ---------------------------------------------------------------------------
 # Gemini backend (active) -- supports text + reference image(s) -> image
@@ -76,49 +78,89 @@ def _generate_gemini(
     contents.append(prompt)
 
     delay = 2  # starting delay in seconds
+    response = None
+
+    # Retry loop for transient server errors (500s)
     for attempt in range(max_retries):
         try:
-               response = client.models.generate_content(
+            response = client.models.generate_content(
                        model=config.models.gemini_image_model,
                        contents=contents,
                        config=types.GenerateContentConfig(response_modalities=["IMAGE"]),
                    )
-               return response
+            break
         except ServerError as e:
-               print(f"Attempt {attempt + 1} hit Google 500 error. Retrying in {delay} seconds...")
-               time.sleep(delay)
-               delay *= 2  # Exponential backoff
+            print(f"Attempt {attempt + 1} hit Google 500 error. Retrying in {delay} seconds...")
+            time.sleep(delay)
+            delay *= 2  # Exponential backoff
     
-    
+    if response is None:
+        raise RuntimeError("Gemini returned no response.")
 
-    # Gemini returns candidates=[] (and .parts=None) on safety blocks or
-    # empty generations -- never assume .parts is iterable.
+    
+    # prompt-side block (no candidates at all)
     if not response.candidates:
         feedback = getattr(response, "prompt_feedback", None)
-        block_reason = getattr(feedback, "block_reason", "unknown")
+        block_reason = getattr(feedback, "block_reason", None)
+        reason_code = getattr(block_reason, "name", block_reason) or "UNKNOWN"
         raise GenerationBlockedError(
-            f"Gemini returned no candidates (block_reason={block_reason}) "
-            f"for prompt: {prompt[:200]!r}"
+            f"Gemini returned no candidates (block_reason={reason_code}) "
+            f"for prompt: {prompt[:200]!r}",
+            reason_code=reason_code,  # SAFETY / SPII / BLOCKLIST / OTHER
         )
 
     candidate = response.candidates[0]
-    
-    # Catch NO_IMAGE explicitly to provide a better error message
-    if getattr(candidate.finish_reason, "name", candidate.finish_reason) == "NO_IMAGE":
+
+    # ---------------------------------------------------------
+    # Check finish reason
+    # ---------------------------------------------------------
+
+    finish_reason = getattr(candidate.finish_reason, "name", candidate.finish_reason)
+
+    # Explicit Gemini image-blocking finish reasons -- each gets its own
+    # remediation template in prompt_utils.REMEDIATION_TEMPLATES.
+    # IMAGE_OTHER is the most common one seen in practice: a catch-all for
+    # image generation failing for a reason Gemini doesn't further
+    # categorize (as opposed to a specific safety/policy/recitation block).
+    BLOCKED_FINISH_REASONS = {
+        "NO_IMAGE",
+        "IMAGE_SAFETY",
+        "IMAGE_PROHIBITED_CONTENT",
+        "IMAGE_RECITATION",
+        "IMAGE_OTHER",
+    }
+    if finish_reason in BLOCKED_FINISH_REASONS:
         raise GenerationBlockedError(
-            f"Gemini blocked the image generation (likely due to human face/person safety filters). "
-            f"Prompt: {prompt[:200]!r}"
+            f"Gemini blocked image generation (finish_reason={finish_reason}). "
+            f"Prompt: {prompt[:200]!r}",
+            reason_code=finish_reason,
         )
 
-    if candidate.finish_reason not in ("STOP", "MAX_TOKENS", None) or not candidate.content.parts:
+    if finish_reason not in ("STOP", "MAX_TOKENS", None):
         raise GenerationBlockedError(
-            f"Gemini finished with reason={candidate.finish_reason!r}, no usable parts. "
-            f"Prompt: {prompt[:200]!r}"
+            f"Gemini finished with reason={finish_reason!r}. Prompt: {prompt[:200]!r}",
+            reason_code=finish_reason or "UNKNOWN",
         )
-    
-    for part in response.parts:
-        if part.inline_data:
-            return ImageResult(image_bytes=part.inline_data.data, mime_type=part.inline_data.mime_type)
+
+    parts = getattr(candidate.content, "parts", None)
+    if not parts:
+        raise GenerationBlockedError(
+            f"Gemini returned no usable parts. Finish reason: {finish_reason!r}. "
+            f"Prompt: {prompt[:200]!r}",
+            reason_code="STOP_NO_IMAGE",   # STOP + text refusal/empty, no image bytes
+        )
+
+    for part in parts:
+            if getattr(part, "inline_data", None):
+                return ImageResult(
+                    image_bytes=part.inline_data.data,
+                    mime_type=part.inline_data.mime_type or "image/png",
+                )
+
+    raise GenerationBlockedError(
+        f"Gemini response contained no image data. Prompt: {prompt[:200]!r}",
+        reason_code="STOP_NO_IMAGE",
+    )
 
 
 

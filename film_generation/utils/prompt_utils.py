@@ -34,6 +34,65 @@ DEFAULT_NEGATIVE_PROMPT = (
     "watermark, low resolution, inconsistent lighting"
 )
 
+REMEDIATION_TEMPLATES: dict[str, str] = {
+    "IMAGE_SAFETY": (
+        "The previous attempt was blocked by post-generation safety filters. "
+        "Neutralize intense emotional or violent keywords, soften action "
+        "descriptions, and avoid explicit, graphic, or gory visual detail."
+    ),
+    "IMAGE_PROHIBITED_CONTENT": (
+        "The previous attempt was blocked for prohibited content. Replace any "
+        "real person's name, copyrighted character, logo, or trademarked "
+        "visual element with a generic descriptor (e.g. 'a heroic warrior in "
+        "dark armor' instead of a named copyrighted character)."
+    ),
+    "NO_IMAGE": (
+        "The previous attempt produced no image payload. Phrase the request "
+        "explicitly as 'Generate an image of...' describing one concrete "
+        "visual subject."
+    ),
+    "IMAGE_RECITATION": (
+        "The previous attempt too closely resembled existing copyrighted "
+        "artwork or stock imagery. Change the art-direction/style keywords "
+        "(e.g. photorealistic -> stylized digital painting) and vary the "
+        "composition details."
+    ),
+    "IMAGE_OTHER": (
+        "The previous attempt failed to produce an image for an unspecified "
+        "reason. Simplify the description into one clear, unambiguous visual "
+        "subject, remove any conflicting or overly complex instructions, and "
+        "phrase it as a direct 'Generate an image of...' request."
+    ),
+    "STOP_NO_IMAGE": (
+        "The previous attempt returned a text explanation instead of an "
+        "image. Rephrase as a direct visual subject description, not a "
+        "conversational request or question."
+    ),
+    "SAFETY": (
+        "The previous attempt was blocked before generation began due to "
+        "unsafe input text. Remove sensitive, unsafe, or banned terms from "
+        "the description."
+    ),
+    "SPII": (
+        "The previous attempt was blocked because the input contained "
+        "sensitive personal information. Remove real names or identifying "
+        "personal details from the description."
+    ),
+    "BLOCKLIST": (
+        "The previous attempt was blocked for containing blocklisted terms. "
+        "Reword the description to avoid banned vocabulary."
+    ),
+}
+
+_DEFAULT_REMEDIATION = (
+    "The previous attempt failed to generate (reason: {reason}). Simplify "
+    "and rephrase the description as a direct, safe visual subject."
+)
+
+
+def remediation_feedback_for(reason_code: str) -> str:
+    return REMEDIATION_TEMPLATES.get(reason_code, _DEFAULT_REMEDIATION.format(reason=reason_code))
+
 
 def lighting_hint_for_tone(tone: str) -> str:
     tone_key = tone.strip().lower()

@@ -20,7 +20,21 @@ from pathlib import Path
 from film_generation.schemas import ShotPrompt
 
 # asset_manager.py
+def _cache_meta_path(self, cache_key: str) -> Path:
+    meta_dir = self.output_dir / "_cache"
+    meta_dir.mkdir(parents=True, exist_ok=True)
+    return meta_dir / f"{cache_key}.json"
 
+def has_cached(self, cache_key: str) -> bool:
+    return self._cache_meta_path(cache_key).exists()
+
+def save_cache(self, cache_key: str, data: dict) -> None:
+    """Call this right after a successful generation, alongside whatever
+    already writes the binary asset to path_for(...)."""
+    self._cache_meta_path(cache_key).write_text(json.dumps(data))
+
+def load_cached(self, cache_key: str) -> dict:
+    return json.loads(self._cache_meta_path(cache_key).read_text())
 
 def compute_cache_key(shot_prompt: ShotPrompt, model_backend: str, seed: int) -> str:
     payload = {
