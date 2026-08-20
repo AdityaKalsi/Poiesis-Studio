@@ -126,7 +126,9 @@ def build_generation_graph(reasoning_state: ProjectState, config: GenerationConf
         ]
 
     def node_generate_character_reference(payload: dict) -> dict:
+
         name = payload["character_name"]
+        #create a cache key based on the character name, if not already cached, generate the character reference and save it to the cache
         cache_key = f"charref-{name}"
         cached = _cache_lookup(assets, cache_key)
         if cached is not None:
@@ -142,14 +144,17 @@ def build_generation_graph(reasoning_state: ProjectState, config: GenerationConf
         except Exception as exc:
             raise RuntimeError(f"[Character Reference] failed for {name!r}: {exc}") from exc
         assets.save_cache(cache_key, ref.model_dump())
-        print("\n" + "=" * 80 + "\n")
-        return {"character_refs": {name: ref}}
 
+        print("\n" + "=" * 80 + "\n")
+
+        return {"character_refs": {name: ref}}
+    
+    #collapse the parallel fan-out back into one normal graph step.
     def node_join_character_refs(state: GenerationState) -> dict:
         return {}
 
     # -- scene anchor -------------------------------------------------------
-
+    #Finds scenes that don't have a scene anchor yet.
     def route_to_scene_anchors(state: GenerationState):
         print(f"[Scene Anchor] Checking for {len(reasoning_state.breakdown.scenes)} scenes")
         scenes_to_generate: dict[int, tuple] = {}
@@ -187,7 +192,9 @@ def build_generation_graph(reasoning_state: ProjectState, config: GenerationConf
         except Exception as exc:
             raise RuntimeError(f"[Scene Anchor] failed for scene {scene_number}: {exc}") from exc
         print("\n" + "=" * 80 + "\n")
+
         assets.save_cache(cache_key, anchor.model_dump())
+
         return {"scene_anchors": {scene_number: anchor}}
 
     def node_join_scene_anchors(state: GenerationState) -> dict:
@@ -554,6 +561,7 @@ def build_generation_graph(reasoning_state: ProjectState, config: GenerationConf
             ("film_generation.schemas", "GeneratedClip"),
             ("film_generation.schemas", "EditDecisionList"),
             ("film_generation.schemas", "ShotGenerationFailure"),
+            ('film_generation.schemas', 'EntityState'),
         ]
     )
     conn = sqlite3.connect(database="generation.db", check_same_thread=False)

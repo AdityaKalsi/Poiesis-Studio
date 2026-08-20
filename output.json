@@ -1,0 +1,165 @@
+{
+  "script_text": "**EXT. MOUNTAIN FOREST TRAIL â€“ SUNSET**\n\nA narrow trail winds through towering pine trees. Golden sunlight filters through the branches as mist drifts between the trunks. Fallen leaves cover the ground.\n\nELENA (Late 20s with a sharp, determined gaze, her hair practically tied back to stay out of her face. She wears Olive green waterproof utility jacket over a dark charcoal crewneck t-shirt, paired with fitted navy blue cargo jeans and dark brown leather hiking boots.), \nKAI (30s, rugged and scruffy with weather-beaten skin and vigilant, perceptive eyes. He is dressed in Weathered dark brown canvas jacket over a faded heather-gray t-shirt, paired with rugged dark-wash indigo jeans and heavy slate-gray work boots.),\n and MIRA (Early 20s with wide, expressive eyes and a youthful, observant demeanor. She wears Mustard yellow knit zip jacket over a plain white crewneck t-shirt, paired with distressed light-wash blue jeans and tan suede trail boots.) hike cautiously through the forest.\n\nElena studies an old leather map while Kai scans the surroundings with a pair of binoculars. Mira carries a weathered backpack with a lantern hanging from its side.\n\nA flock of birds suddenly bursts from the trees.\n\nThe three freeze.\n\nKAI\nSomething's moving.\n\nA low rumble echoes in the distance.\n\nElena folds the map and points toward an abandoned stone watchtower visible on a nearby ridge.\n\nThe group quickly heads uphill.\n\n",
+  "breakdown": {
+    "title": "Script Breakdown",
+    "scenes": [
+      {
+        "scene_number": 1,
+        "heading": "EXT. MOUNTAIN FOREST TRAIL – SUNSET",
+        "synopsis": "Elena, Kai, and Mira hike through a forest trail, with Elena studying a map, Kai using binoculars, and Mira carrying a backpack with a lantern.",
+        "cast": [
+          "ELENA",
+          "KAI",
+          "MIRA"
+        ],
+        "props": [
+          "old leather map",
+          "pair of binoculars",
+          "weathered backpack",
+          "lantern"
+        ],
+        "locations": [
+          "EXT. MOUNTAIN FOREST TRAIL"
+        ],
+        "wardrobe_notes": [
+          "ELENA: Olive green waterproof utility jacket, dark charcoal crewneck t-shirt, fitted navy blue cargo jeans, dark brown leather hiking boots",
+          "KAI: Weathered dark brown canvas jacket, faded heather-gray t-shirt, rugged dark-wash indigo jeans, heavy slate-gray work boots",
+          "MIRA: Mustard yellow knit zip jacket, plain white crewneck t-shirt, distressed light-wash blue jeans, tan suede trail boots"
+        ],
+        "vfx_or_sfx": [
+          "flock of birds bursting from the trees",
+          "low rumble echoing in the distance"
+        ],
+        "stunts": [],
+        "special_equipment": [
+          "binoculars",
+          "lantern"
+        ],
+        "sound_notes": [
+          "ambient forest sounds, birds chirping"
+        ]
+      }
+    ]
+  },
+  "intent_briefs": [
+    {
+      "scene_number": 1,
+      "purpose": "Establish the characters' roles and relationships while setting the stage for their journey.",
+      "emotional_objective": "The audience should feel a sense of camaraderie and shared purpose among the characters as they prepare for their hike.",
+      "visual_objective": "A close-up of the old leather map with a flashlight beam illuminating the details, showing the characters intently studying it against the warm, golden light of sunset.",
+      "character_objectives": {
+        "ELENA": "To assert her leadership and ensure everyone is on the right path. She wants the group to start their hike on time and uses the map to guide them.",
+        "KAI": "To find and identify potential dangers or interesting sights. He wants to impress the group with his keen observation skills and uses the binoculars to scan the surroundings.",
+        "MIRA": "To carry the supplies and ensure the group is well-prepared for the night. She wants to be seen as reliable and capable and uses the lantern to show she is prepared for any situation."
+      },
+      "tone": "Tense and anticipatory"
+    }
+  ],
+  "shot_lists": [
+    {
+      "scene_number": 1,
+      "shots": [
+        {
+          "shot_number": "S1-Wide",
+          "shot_type": "wide",
+          "lens_mm": null,
+          "description": "A wide shot of the forest trail at sunset, with the characters moving along the path. The golden light of the setting sun illuminates the forest, creating a warm, anticipatory atmosphere. This shot establishes the setting and the characters' journey.",
+          "movement": null,
+          "narrative_purpose": "Geography and isolation/scale"
+        },
+        {
+          "shot_number": "S2-Medium",
+          "shot_type": "medium",
+          "lens_mm": null,
+          "description": "A medium shot of Elena, Kai, and Mira walking together, with Elena leading the group. She is holding a map, and Kai is using binoculars to scan the surroundings. Mira is carrying the backpack with the lantern.",
+          "movement": null,
+          "narrative_purpose": "Default conversational"
+        },
+        {
+          "shot_number": "S3-Close-up",
+          "shot_type": "close_up",
+          "lens_mm": null,
+          "description": "A close-up of Elena's face as she intently studies the map, her flashlight beam illuminating the details. She looks determined and focused.",
+          "movement": null,
+          "narrative_purpose": "Elena's character objective: To assert her leadership and ensure everyone is on the right path."
+        },
+        {
+          "shot_number": "S4-Medium",
+          "shot_type": "medium",
+          "lens_mm": null,
+          "description": "A medium shot of Kai using the binoculars, scanning the surroundings. He looks attentive and observant, occasionally nodding to Elena.",
+          "movement": null,
+          "narrative_purpose": "Kai's character objective: To find and identify potential dangers or interesting sights."
+        },
+        {
+          "shot_number": "S5-Close-up",
+          "shot_type": "close_up",
+          "lens_mm": null,
+          "description": "A close-up of Mira's face as she carries the lantern, looking confident and prepared. She smiles briefly at Elena, indicating camaraderie.",
+          "movement": null,
+          "narrative_purpose": "Mira's character objective: To carry the supplies and ensure the group is well-prepared for the night."
+        },
+        {
+          "shot_number": "S6-Close-up",
+          "shot_type": "close_up",
+          "lens_mm": null,
+          "description": "A close-up of the old leather map with a flashlight beam illuminating the details, showing the characters intently studying it against the warm, golden light of sunset.",
+          "movement": null,
+          "narrative_purpose": "Visual objective: A close-up of the old leather map with a flashlight beam illuminating the details."
+        },
+        {
+          "shot_number": "S7-Cutaway",
+          "shot_type": "cutaway",
+          "lens_mm": null,
+          "description": "A cutaway shot of the group walking together, with a brief reaction from Mira, who looks back at Elena with a reassuring smile. This shot reinforces their camaraderie and shared purpose.",
+          "movement": null,
+          "narrative_purpose": "Emotional objective: The audience should feel a sense of camaraderie and shared purpose among the characters."
+        }
+      ]
+    }
+  ],
+  "edited_sequences": [
+    {
+      "scene_number": 1,
+      "shot_order": [
+        "S1-Wide (wide)",
+        "S2-Medium (medium)",
+        "S3-Close-up (close_up)",
+        "S4-Medium (medium)",
+        "S5-Close-up (close_up)",
+        "S6-Close-up (close_up)",
+        "S7-Cutaway (cutaway)"
+      ],
+      "pacing_notes": "The scene begins with a wide shot to establish the setting and the characters' journey, setting a tense and anticipatory tone. The medium shot of the group walking together introduces the characters and their roles. Close-ups of each character's face and actions emphasize their individual objectives and the shared purpose. The close-up of the map highlights the importance of the task at hand. The cutaway shot reinforces the camaraderie and shared purpose, building towards the emotional objective of establishing a sense of unity. The scene ends with a cutaway to maintain the connection and emotional resonance.",
+      "transitions_in_out": "The scene begins with a hard cut from the wide shot to the medium shot of the group walking together. This transition is used to directly introduce the characters and their roles. The scene ends with a soft fade to black, signifying the end of the setup and the beginning of their journey. This transition is chosen to build anticipation and maintain the tense, anticipatory tone."
+    }
+  ],
+  "cinematography_critiques": [
+    {
+      "scene_number": 1,
+      "stage": "cinematography",
+      "score": 7,
+      "passes": true,
+      "feedback": "This shot effectively serves the visual objective by showing the old leather map with a flashlight beam illuminating the details, and it does a good job of establishing the characters' intently studying the map against the warm, golden light of sunset. However, it could be more specific to the character objectives. For instance, Elena's determination and focus could be more prominently shown, and Kai's attentiveness could be more clearly linked to his character objective of finding potential dangers or interesting sights. Additionally, the shot could benefit from a slight adjustment in framing to ensure that the characters' expressions and actions are more clearly visible and aligned with their character objectives."
+    }
+  ],
+  "final_critiques": [
+    {
+      "scene_number": 1,
+      "stage": "editing",
+      "score": 7,
+      "passes": true,
+      "feedback": "The scene effectively establishes the characters' roles and relationships, and sets the stage for their journey. However, there are a few areas that could be improved to better align with the Director's Intent Brief. Specifically, the pacing and transitions could be more finely tuned to emphasize the emotional and visual objectives. Here are some specific suggestions for improvement:"
+    }
+  ],
+  "cinematography_revision_count": 0,
+  "max_revisions": 2,
+  "log": [
+    "[Script Analyst] extracted 1 scenes",
+    "[Scene Design] wrote 1 intent briefs",
+    "[Cinematography] produced/updated 1 shot lists",
+    "[Critic] scored 1 shot lists",
+    "[Editing] assembled 1 scene sequences",
+    "[Critic] scored 1 edited sequences"
+  ]
+}

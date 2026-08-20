@@ -32,7 +32,7 @@ from film_generation.pipeline import run_generation
 
 
 # Must match the thread_id your real run_movie.py used to populate reasoning.db.
-REASONING_THREAD_ID = "movie_001"
+REASONING_THREAD_ID = "percy_jackson"  # change this if you used a different thread_id in run_movie.py
 
 TEST_GENERATION_DB = "test_generation.db"   # isolated -- never touches generation.db
 TEST_THREAD_ID = "checkpoint_flow_test"
@@ -72,7 +72,7 @@ def run_reasoning_stage(script_path: str) -> ProjectState:
 
     final_reasoning_state = reasoning_graph.invoke(ProjectState(script_text=script_text), config={
         "configurable": {
-            "thread_id": "movie_001"
+            "thread_id": "REASONING_THREAD_ID"
         }
     })
 
@@ -93,7 +93,7 @@ def run_reasoning_stage(script_path: str) -> ProjectState:
 
 def run_generation_stage(project_state: ProjectState, resume: bool = False,
                           thread_id: str = "percy_jackson"):
-    print(f"[2/2] Generation pipeline running (calls paid image/video APIs)\n{'=' * 60}")
+    print(f"[2/2] Generation pipeline running \n{'=' * 60}")
     config = load_config()
 
     return run_generation(project_state, config, resume=resume, thread_id=thread_id)
@@ -101,20 +101,18 @@ def run_generation_stage(project_state: ProjectState, resume: bool = False,
 
 def main() -> None:
     script_path = sys.argv[1] if len(sys.argv) > 1 else "sample_script.txt"
-    resume = "--resume" in sys.argv
+    #resume = "--resume" in sys.argv
 
-    #final_resoning_state = run_reasoning_stage(script_path)
-    final_resoning_state = load_completed_reasoning_state()
-
-    print("[Adapter] building GenerationState from the loaded ProjectState...")
+    final_resoning_state = run_reasoning_stage(script_path)
+    #final_resoning_state = load_completed_reasoning_state()
 
     if not final_resoning_state.breakdown or not final_resoning_state.shot_lists:
         print("Reasoning pipeline produced no usable breakdown/shot lists -- "
               "stopping before generation (nothing to generate from).")
         sys.exit(1)
 
-    final_gen_state = run_generation_stage(final_resoning_state, resume=resume)
-    #final_gen_state = run_generation_stage(final_resoning_state)
+    #final_gen_state = run_generation_stage(final_resoning_state, resume=resume)
+    final_gen_state = run_generation_stage(final_resoning_state)
 
     # Write the complete generation stage state to a JSON file
     gen_out_path = Path("generation_output.json")

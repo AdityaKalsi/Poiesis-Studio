@@ -144,10 +144,10 @@ class GenerationState(BaseModel):
      # -- fields written by parallel Send tasks: MUST have a merge reducer --
     character_refs: Annotated[dict[str, CharacterReference], merge_dicts] = Field(default_factory=dict)
     scene_anchors: Annotated[dict[int, SceneAnchor], merge_dicts] = Field(default_factory=dict)
-    generated_images: Annotated[list[GeneratedImage], operator.add] = Field(default_factory=list)
+    generated_images: Annotated[dict[str, GeneratedImage], merge_dicts] = Field(default_factory=dict)
     shot_generation_failures: Annotated[dict[str, ShotGenerationFailure], merge_dicts] = Field(default_factory=dict)
-    visual_critiques: Annotated[list[VisualCritique], operator.add] = Field(default_factory=list)
-    generated_clips: Annotated[list[GeneratedClip], operator.add] = Field(default_factory=list)
+    visual_critiques: Annotated[dict[str, VisualCritique], merge_dicts] = Field(default_factory=dict)
+    generated_clips: Annotated[dict[str, GeneratedClip], merge_dicts] = Field(default_factory=dict)
     generation_call_count: Annotated[int, operator.add] = 0
     
         # -- fields written by exactly one (batch) node invocation per step --

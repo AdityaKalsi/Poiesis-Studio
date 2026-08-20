@@ -48,6 +48,79 @@ class GenerationBlockedError(RuntimeError):
 # ---------------------------------------------------------------------------
 # Gemini backend (active) -- supports text + reference image(s) -> image
 # ---------------------------------------------------------------------------
+def _remediate_prompt(prompt: str, reason_code: str) -> str:
+    """
+    Modify the image prompt after Gemini refuses or fails
+    to produce an image.
+
+    The goal is to make the request clearer, more neutral,
+    fictional, and image-generation friendly.
+    """
+
+    remediation = {
+        "NO_IMAGE": """
+        Rewrite the request into a clearly fictional, non-sensitive
+        visual description. Remove unnecessary details that could
+        cause the image request to be rejected. Keep the character,
+        appearance, clothing, environment, composition, and visual
+        intent unchanged where possible. Do not introduce real people
+        or sensitive real-world context.
+        """,
+
+        "IMAGE_SAFETY": """
+        Rewrite this as a clearly fictional character image.
+        Remove or neutralize any potentially sensitive, violent,
+        sexual, graphic, or otherwise policy-sensitive wording.
+        Preserve the intended character appearance and visual style.
+        """,
+
+                "IMAGE_PROHIBITED_CONTENT": """
+        Rewrite the request as a safe fictional image-generation prompt.
+        Remove prohibited or potentially problematic details while
+        preserving the core visual concept.
+        """,
+
+                "IMAGE_RECITATION": """
+        Rewrite the description completely in original wording.
+        Do not reproduce recognizable copyrighted text or copied
+        descriptions. Preserve only the visual characteristics needed
+        to generate the intended fictional image.
+        """,
+
+                "IMAGE_OTHER": """
+        Simplify and rewrite this as a clean, fictional,
+        image-generation prompt. Remove unnecessary ambiguity and
+        potentially problematic wording while preserving the intended
+        visual result.
+        """,
+
+                "STOP_NO_IMAGE": """
+        Rewrite this as a concise, explicit visual image-generation
+        prompt. Clearly describe the subject, appearance, clothing,
+        pose, composition, and style without unnecessary or ambiguous
+        language.
+        """,
+            }
+
+    instruction = remediation.get(
+                reason_code,
+                """
+        Rewrite the prompt into a concise, clear, fictional,
+        image-generation-friendly visual description while preserving
+        the original intent.
+        """,
+            )
+
+    return f"""Create the image described below.
+
+        IMPORTANT:
+        {instruction}
+
+        Original request:
+        {prompt}
+
+        Return ONLY the rewritten image-generation prompt.
+        """.strip()
 
 def _generate_gemini(
     prompt: str,
@@ -55,112 +128,258 @@ def _generate_gemini(
     reference_image_paths: list[str] | None = None,
     max_retries: int = 3,
 ) -> ImageResult:
-    print("\n" + "="*80 + "\n")
-    print(f"[Gemini] Generating image")
 
+    print("\n" + "=" * 80 + "\n")
+    print("[Gemini] Generating image")
 
     api_key = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
     if not api_key:
         raise RuntimeError(
-            "GEMINI_API_KEY (or GOOGLE_API_KEY) is not set -- required for the Gemini image backend."
+            "GEMINI_API_KEY (or GOOGLE_API_KEY) is not set."
         )
 
     client = genai.Client(api_key=api_key)
 
-    # Multimodal contents: reference images first (grounds identity/style),
-    # then the text prompt describing what to generate.
+    # ---------------------------------------------------------
+    # Reference images + prompt
+    # ---------------------------------------------------------
     contents: list = []
+
     for ref_path in reference_image_paths or []:
-        contents.append(types.Part.from_bytes(
-            data=Path(ref_path).read_bytes(),
-            mime_type="image/png",
-        ))
-    contents.append(prompt)
-
-    delay = 2  # starting delay in seconds
-    response = None
-
-    # Retry loop for transient server errors (500s)
-    for attempt in range(max_retries):
-        try:
-            response = client.models.generate_content(
-                       model=config.models.gemini_image_model,
-                       contents=contents,
-                       config=types.GenerateContentConfig(response_modalities=["IMAGE"]),
-                   )
-            break
-        except ServerError as e:
-            print(f"Attempt {attempt + 1} hit Google 500 error. Retrying in {delay} seconds...")
-            time.sleep(delay)
-            delay *= 2  # Exponential backoff
-    
-    if response is None:
-        raise RuntimeError("Gemini returned no response.")
-
-    
-    # prompt-side block (no candidates at all)
-    if not response.candidates:
-        feedback = getattr(response, "prompt_feedback", None)
-        block_reason = getattr(feedback, "block_reason", None)
-        reason_code = getattr(block_reason, "name", block_reason) or "UNKNOWN"
-        raise GenerationBlockedError(
-            f"Gemini returned no candidates (block_reason={reason_code}) "
-            f"for prompt: {prompt[:200]!r}",
-            reason_code=reason_code,  # SAFETY / SPII / BLOCKLIST / OTHER
+        contents.append(
+            types.Part.from_bytes(
+                data=Path(ref_path).read_bytes(),
+                mime_type="image/png",
+            )
         )
 
-    candidate = response.candidates[0]
-
     # ---------------------------------------------------------
-    # Check finish reason
+    # Retry state
     # ---------------------------------------------------------
+    current_prompt = prompt
+    delay = 2
 
-    finish_reason = getattr(candidate.finish_reason, "name", candidate.finish_reason)
-
-    # Explicit Gemini image-blocking finish reasons -- each gets its own
-    # remediation template in prompt_utils.REMEDIATION_TEMPLATES.
-    # IMAGE_OTHER is the most common one seen in practice: a catch-all for
-    # image generation failing for a reason Gemini doesn't further
-    # categorize (as opposed to a specific safety/policy/recitation block).
     BLOCKED_FINISH_REASONS = {
         "NO_IMAGE",
         "IMAGE_SAFETY",
         "IMAGE_PROHIBITED_CONTENT",
         "IMAGE_RECITATION",
         "IMAGE_OTHER",
+        "STOP_NO_IMAGE",
     }
-    if finish_reason in BLOCKED_FINISH_REASONS:
-        raise GenerationBlockedError(
-            f"Gemini blocked image generation (finish_reason={finish_reason}). "
-            f"Prompt: {prompt[:200]!r}",
-            reason_code=finish_reason,
-        )
 
-    if finish_reason not in ("STOP", "MAX_TOKENS", None):
-        raise GenerationBlockedError(
-            f"Gemini finished with reason={finish_reason!r}. Prompt: {prompt[:200]!r}",
-            reason_code=finish_reason or "UNKNOWN",
-        )
+    # ---------------------------------------------------------
+    # Gemini retry loop
+    # ---------------------------------------------------------
+    for attempt in range(1, max_retries + 1):
 
-    parts = getattr(candidate.content, "parts", None)
-    if not parts:
-        raise GenerationBlockedError(
-            f"Gemini returned no usable parts. Finish reason: {finish_reason!r}. "
-            f"Prompt: {prompt[:200]!r}",
-            reason_code="STOP_NO_IMAGE",   # STOP + text refusal/empty, no image bytes
-        )
+        print(f"[Gemini] Attempt {attempt}/{max_retries}")
 
-    for part in parts:
-            if getattr(part, "inline_data", None):
-                return ImageResult(
-                    image_bytes=part.inline_data.data,
-                    mime_type=part.inline_data.mime_type or "image/png",
+        try:
+            response = client.models.generate_content(
+                model=config.models.gemini_image_model,
+                contents=contents + [current_prompt],
+                config=types.GenerateContentConfig(
+                    response_modalities=["IMAGE"]
+                ),
+            )
+
+        # =====================================================
+        # 1. TRANSIENT SERVER ERROR
+        # =====================================================
+        except ServerError as e:
+
+            if attempt >= max_retries:
+                raise RuntimeError(
+                    f"Gemini server error after {max_retries} attempts: {e}"
+                ) from e
+
+            print(
+                f"[Gemini] Server error. "
+                f"Retrying in {delay} seconds..."
+            )
+
+            time.sleep(delay)
+            delay *= 2
+            continue
+
+        # =====================================================
+        # 2. NO CANDIDATES / PROMPT BLOCK
+        # =====================================================
+        if not response.candidates:
+
+            feedback = getattr(response, "prompt_feedback", None)
+            block_reason = getattr(feedback, "block_reason", None)
+
+            reason_code = (
+                getattr(block_reason, "name", block_reason)
+                or "UNKNOWN"
+            )
+
+            if attempt >= max_retries:
+                raise GenerationBlockedError(
+                    f"Gemini returned no candidates "
+                    f"(block_reason={reason_code}) "
+                    f"after {max_retries} attempts.",
+                    reason_code=reason_code,
                 )
 
-    raise GenerationBlockedError(
-        f"Gemini response contained no image data. Prompt: {prompt[:200]!r}",
-        reason_code="STOP_NO_IMAGE",
-    )
+            # Modify prompt before retry
+            current_prompt = _remediate_prompt(
+                original_pr,
+                reason_code,
+            )
+
+            print(
+                f"[Gemini] Prompt blocked: {reason_code}"
+            )
+            print(
+                f"[Gemini] Modifying prompt and "
+                f"retrying in {delay} seconds..."
+            )
+
+            time.sleep(delay)
+            delay *= 2
+            continue
+
+        candidate = response.candidates[0]
+
+        # =====================================================
+        # 3. CHECK GEMINI FINISH REASON
+        # =====================================================
+        finish_reason = getattr(
+            candidate.finish_reason,
+            "name",
+            candidate.finish_reason,
+        )
+
+        if finish_reason in BLOCKED_FINISH_REASONS:
+
+            if attempt >= max_retries:
+                raise GenerationBlockedError(
+                    f"Gemini blocked image generation "
+                    f"after {max_retries} attempts "
+                    f"(finish_reason={finish_reason}).",
+                    reason_code=finish_reason,
+                )
+
+            # ---------------------------------------------
+            # IMPORTANT:
+            # Modify the prompt and try Gemini again
+            # ---------------------------------------------
+            current_prompt = _remediate_prompt(
+                current_prompt,
+                finish_reason,
+            )
+
+            print(
+                f"[Gemini] Image generation blocked: "
+                f"{finish_reason}"
+            )
+
+            print(
+                "[Gemini] Modified prompt:"
+            )
+            print(current_prompt[:500])
+
+            print(
+                f"[Gemini] Retrying in {delay} seconds..."
+            )
+
+            time.sleep(delay)
+            delay *= 2
+
+            continue
+
+        # =====================================================
+        # 4. OTHER UNSUCCESSFUL FINISH REASON
+        # =====================================================
+        if finish_reason not in ("STOP", "MAX_TOKENS", None):
+
+            if attempt >= max_retries:
+                raise GenerationBlockedError(
+                    f"Gemini finished with reason={finish_reason!r} "
+                    f"after {max_retries} attempts.",
+                    reason_code=finish_reason or "UNKNOWN",
+                )
+
+            current_prompt = _remediate_prompt(
+                current_prompt,
+                finish_reason,
+            )
+
+            print(
+                f"[Gemini] Unexpected finish reason: "
+                f"{finish_reason}"
+            )
+
+            time.sleep(delay)
+            delay *= 2
+            continue
+
+        # =====================================================
+        # 5. EXTRACT IMAGE
+        # =====================================================
+        parts = getattr(candidate.content, "parts", None)
+
+        if not parts:
+
+            if attempt >= max_retries:
+                raise GenerationBlockedError(
+                    "Gemini returned no usable image parts.",
+                    reason_code="STOP_NO_IMAGE",
+                )
+
+            current_prompt = _remediate_prompt(
+                current_prompt,
+                "STOP_NO_IMAGE",
+            )
+
+            print(
+                "[Gemini] No image data. "
+                f"Retrying in {delay} seconds..."
+            )
+
+            time.sleep(delay)
+            delay *= 2
+            continue
+
+        for part in parts:
+
+            if getattr(part, "inline_data", None):
+
+                print(
+                    f"[Gemini] Image generated successfully "
+                    f"on attempt {attempt}"
+                )
+
+                return ImageResult(
+                    image_bytes=part.inline_data.data,
+                    mime_type=part.inline_data.mime_type
+                    or "image/png",
+                )
+
+        # No image bytes found
+        if attempt >= max_retries:
+            raise GenerationBlockedError(
+                "Gemini response contained no image data.",
+                reason_code="STOP_NO_IMAGE",
+            )
+
+        current_prompt = _remediate_prompt(
+            current_prompt,
+            "STOP_NO_IMAGE",
+        )
+
+        print(
+            "[Gemini] Response contained no image. "
+            f"Retrying in {delay} seconds..."
+        )
+
+        time.sleep(delay)
+        delay *= 2
+
+    raise RuntimeError("Gemini image generation failed.")
 
 
 
