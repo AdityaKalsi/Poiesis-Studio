@@ -1,0 +1,8 @@
+{
+  "scene_number": 1,
+  "environment_image_path": "film_generation\\outputs\\scene_anchor\\scene_001\\anchor.png",
+  "layout_description": "EXT. MOUNTAIN FOREST TRAIL",
+  "lighting_description": "A close-up of the old leather map with a flashlight beam illuminating the details, showing the characters intently studying it against the warm, golden light of sunset.",
+  "seed": null,
+  "approved": false
+}

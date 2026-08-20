@@ -48,6 +48,75 @@ class GenerationBlockedError(RuntimeError):
 # ---------------------------------------------------------------------------
 # Gemini backend (active) -- supports text + reference image(s) -> image
 # ---------------------------------------------------------------------------
+def rewrite_image_prompt(
+    prompt: str,
+    reason_code: str,
+    config: GenerationConfig,
+) -> str:
+
+    client = genai.Client(
+        api_key=os.environ.get("GEMINI_API_KEY")
+        or os.environ.get("GOOGLE_API_KEY")
+    )
+
+    rewrite_instruction = f"""
+Rewrite the following image-generation prompt so that it is clearer,
+safer, concise, and more likely to successfully generate an image.
+
+Gemini image failure reason: {reason_code}
+
+Preserve:
+- character identity
+- clothing
+- appearance
+- composition
+- intended visual style
+
+Remove:
+- ambiguous wording
+- sensitive wording
+- unnecessary names/details
+- anything that could trigger image-generation safety filters
+
+Return ONLY the rewritten image prompt.
+
+Original prompt:
+{prompt}
+"""
+
+    response = client.models.generate_content(
+        model=config.models.gemini_text_model,
+        contents=rewrite_instruction,
+    )
+
+    return response.text.strip()
+
+
+def _safe_rewrite_prompt(
+    prompt: str,
+    reason_code: str,
+    config: GenerationConfig,
+) -> str:
+    """
+    Wraps rewrite_image_prompt() (an extra network call to the text model)
+    so that a transient failure there can never take down the whole
+    generation run the way it did before.
+
+    If the API-based rewrite itself fails for any reason (ServerError,
+    timeout, malformed response, etc.), fall back to the offline,
+    template-based _remediate_prompt() below, which needs no network call
+    and therefore can't itself introduce a new point of failure.
+    """
+    try:
+        return rewrite_image_prompt(prompt, reason_code, config)
+    except Exception as e:
+        print(
+            f"[Gemini] Prompt rewrite via API failed ({e!r}); "
+            f"falling back to local template rewrite."
+        )
+        return _remediate_prompt(prompt, reason_code)
+
+
 def _remediate_prompt(prompt: str, reason_code: str) -> str:
     """
     Modify the image prompt after Gemini refuses or fails
@@ -111,16 +180,13 @@ def _remediate_prompt(prompt: str, reason_code: str) -> str:
         """,
             )
 
-    return f"""Create the image described below.
-
-        IMPORTANT:
-        {instruction}
-
-        Original request:
-        {prompt}
-
-        Return ONLY the rewritten image-generation prompt.
-        """.strip()
+    # NOTE: this must return a prompt suitable to send DIRECTLY to the
+    # image model (it's used as `current_prompt` in the generation call).
+    # It must NOT contain meta-instructions like "return only the rewritten
+    # prompt" -- that text was previously being rendered/interpreted by the
+    # image model itself instead of being stripped out, which likely
+    # contributed to repeated NO_IMAGE results.
+    return f"{instruction.strip()}\n\n{prompt.strip()}"
 
 def _generate_gemini(
     prompt: str,
@@ -156,6 +222,7 @@ def _generate_gemini(
     # ---------------------------------------------------------
     # Retry state
     # ---------------------------------------------------------
+    original_prompt = prompt
     current_prompt = prompt
     delay = 2
 
@@ -172,7 +239,7 @@ def _generate_gemini(
     # Gemini retry loop
     # ---------------------------------------------------------
     for attempt in range(1, max_retries + 1):
-
+        
         print(f"[Gemini] Attempt {attempt}/{max_retries}")
 
         try:
@@ -225,9 +292,12 @@ def _generate_gemini(
                 )
 
             # Modify prompt before retry
-            current_prompt = _remediate_prompt(
-                original_pr,
+            # NOTE: was `finish_reason` here, which is undefined in this
+            # branch (only set later, once candidates exist) -> NameError.
+            current_prompt = _safe_rewrite_prompt(
+                original_prompt,
                 reason_code,
+                config,
             )
 
             print(
@@ -267,9 +337,10 @@ def _generate_gemini(
             # IMPORTANT:
             # Modify the prompt and try Gemini again
             # ---------------------------------------------
-            current_prompt = _remediate_prompt(
-                current_prompt,
+            current_prompt = _safe_rewrite_prompt(
+                original_prompt,
                 finish_reason,
+                config,
             )
 
             print(
@@ -303,9 +374,10 @@ def _generate_gemini(
                     reason_code=finish_reason or "UNKNOWN",
                 )
 
-            current_prompt = _remediate_prompt(
-                current_prompt,
+            current_prompt = _safe_rewrite_prompt(
+                original_prompt,
                 finish_reason,
+                config,
             )
 
             print(

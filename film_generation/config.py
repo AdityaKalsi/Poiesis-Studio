@@ -24,7 +24,7 @@ class ModelConfig(BaseModel):
     wrappers, never a specific model SDK directly.
 
     Current stack (no local GPU available):
-      - image: Gemini (gemini-2.5-flash-image, direct API) is primary --
+      - image: Gemini (gemini-3.1-flash-image, direct API) is primary --
         it accepts multiple images alongside the text prompt, so character/
         scene reference images can be passed in for consistency, not just
         described in words. HuggingFace Inference API is implemented as an
@@ -45,11 +45,13 @@ class ModelConfig(BaseModel):
 
     text2image_backend: Literal["gemini", "huggingface"] = "gemini"
     huggingface_text2image_model: str = "black-forest-labs/FLUX.1-dev"
-    gemini_image_model: str = "gemini-3.5-flash-lite"
+    gemini_image_model: str = "gemini-3.1-flash-image"
 
     image2video_fal_model: str = "fal-ai/wan-25-preview/image-to-video"
 
     vlm_backend: str = "gemini-3.5-flash-lite"
+
+    gemini_text_model: str = "gemini-3.6-flash"
 
 class ConsistencyConfig(BaseModel):
     strategy: ConsistencyStrategy = "reference_image"

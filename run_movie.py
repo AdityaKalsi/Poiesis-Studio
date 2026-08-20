@@ -32,7 +32,7 @@ from film_generation.pipeline import run_generation
 
 
 # Must match the thread_id your real run_movie.py used to populate reasoning.db.
-REASONING_THREAD_ID = "percy_jackson"  # change this if you used a different thread_id in run_movie.py
+REASONING_THREAD_ID = "REASONING_THREAD_ID"  # change this if you used a different thread_id in run_movie.py
 
 TEST_GENERATION_DB = "test_generation.db"   # isolated -- never touches generation.db
 TEST_THREAD_ID = "checkpoint_flow_test"
@@ -103,8 +103,8 @@ def main() -> None:
     script_path = sys.argv[1] if len(sys.argv) > 1 else "sample_script.txt"
     #resume = "--resume" in sys.argv
 
-    final_resoning_state = run_reasoning_stage(script_path)
-    #final_resoning_state = load_completed_reasoning_state()
+    #final_resoning_state = run_reasoning_stage(script_path)
+    final_resoning_state = load_completed_reasoning_state()
 
     if not final_resoning_state.breakdown or not final_resoning_state.shot_lists:
         print("Reasoning pipeline produced no usable breakdown/shot lists -- "

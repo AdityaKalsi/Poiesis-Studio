@@ -1,0 +1,9 @@
+{
+  "character_name": "ELENA",
+  "description": "Olive green waterproof utility jacket, dark charcoal crewneck t-shirt, fitted navy blue cargo jeans, dark brown leather hiking boots",
+  "reference_image_path": "film_generation\\outputs\\characters\\ELENA.png",
+  "identity_payload_path": "film_generation\\outputs\\characters\\ELENA.png",
+  "identity_payload_kind": "image",
+  "seed": null,
+  "approved": false
+}
