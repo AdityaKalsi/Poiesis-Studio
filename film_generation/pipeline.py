@@ -95,6 +95,23 @@ def _cache_lookup(assets: AssetManager, cache_key: str):
             return assets.load_cached(cache_key)
     return None
 
+def get_character_description(scene, character_name: str) -> str:
+    """
+    Extract only the wardrobe/description belonging
+    to the requested character.
+    """
+
+    for note in scene.wardrobe_notes:
+
+        if ":" not in note:
+            continue
+
+        name, description = note.split(":", 1)
+
+        if name.strip().lower() == character_name.strip().lower():
+            return description.strip()
+
+    return "No specific character description available."
 
 def build_generation_graph(reasoning_state: ProjectState, config: GenerationConfig):
 
@@ -107,16 +124,24 @@ def build_generation_graph(reasoning_state: ProjectState, config: GenerationConf
 
     # -- character reference ---------------------------------------------
 
+
     def route_to_character_refs(state: GenerationState):
         print(f"[Character Reference] Checking for {len(reasoning_state.breakdown.scenes)} scenes")
         characters_to_generate: dict[str, str] = {}
         for scene in reasoning_state.breakdown.scenes:
-            description = ", ".join(scene.wardrobe_notes) or "no description available"
-            for character in scene.cast:
-                if character in state.character_refs:
-                    continue
-                if character not in characters_to_generate:
-                    characters_to_generate[character] = description
+                for character in scene.cast:
+
+                    if character in state.character_refs:
+                        continue
+
+                    if character not in characters_to_generate:
+
+                        description = get_character_description(
+                            scene,
+                            character,
+                        )
+
+                        characters_to_generate[character] = description
         if not characters_to_generate:
             return route_to_scene_anchors(state)  # nothing to do, delegate straight through
 
