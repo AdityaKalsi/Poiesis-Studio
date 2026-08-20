@@ -101,7 +101,7 @@ def run_generation_stage(project_state: ProjectState, resume: bool = False,
 
 def main() -> None:
     script_path = sys.argv[1] if len(sys.argv) > 1 else "sample_script.txt"
-    #resume = "--resume" in sys.argv
+    resume = "--resume" in sys.argv
 
     #final_resoning_state = run_reasoning_stage(script_path)
     final_resoning_state = load_completed_reasoning_state()
@@ -111,8 +111,8 @@ def main() -> None:
               "stopping before generation (nothing to generate from).")
         sys.exit(1)
 
-    #final_gen_state = run_generation_stage(final_resoning_state, resume=resume)
-    final_gen_state = run_generation_stage(final_resoning_state)
+    final_gen_state = run_generation_stage(final_resoning_state, resume=resume)
+    #final_gen_state = run_generation_stage(final_resoning_state)
 
     # Write the complete generation stage state to a JSON file
     gen_out_path = Path("generation_output.json")

@@ -17,6 +17,8 @@ hardcoded rather than config-driven.
 from __future__ import annotations
 
 import os
+import random
+from PIL import Image
 from dataclasses import dataclass
 from pathlib import Path
 from huggingface_hub import InferenceClient
@@ -45,6 +47,38 @@ class GenerationBlockedError(RuntimeError):
         super().__init__(message)
         self.reason_code = reason_code  # e.g. IMAGE_SAFETY, NO_IMAGE, STOP_NO_IMAGE, SAFETY...
 
+MAX_REFERENCE_IMAGE_BYTES = 1_000_000  # ~1MB
+
+
+def _load_and_downscale_image(
+    path: str, max_bytes: int = MAX_REFERENCE_IMAGE_BYTES
+) -> tuple[bytes, str]:
+    """
+    Large reference-image payloads increase memory pressure on Gemini's
+    generation nodes and are a documented contributor to 500 INTERNAL
+    errors, especially with multiple reference images in one call.
+    """
+    raw = Path(path).read_bytes()
+    if len(raw) <= max_bytes:
+        return raw, "image/png"
+
+    img = Image.open(io.BytesIO(raw)).convert("RGB")
+    quality, scale = 85, 1.0
+
+    while True:
+        w, h = img.size
+        resized = img.resize((max(1, int(w * scale)), max(1, int(h * scale))))
+        buf = io.BytesIO()
+        resized.save(buf, format="JPEG", quality=quality)
+        data = buf.getvalue()
+
+        if len(data) <= max_bytes or (quality <= 40 and scale <= 0.3):
+            return data, "image/jpeg"
+
+        if quality > 40:
+            quality -= 15
+        else:
+            scale *= 0.8
 # ---------------------------------------------------------------------------
 # Gemini backend (active) -- supports text + reference image(s) -> image
 # ---------------------------------------------------------------------------
@@ -192,7 +226,7 @@ def _generate_gemini(
     prompt: str,
     config: GenerationConfig,
     reference_image_paths: list[str] | None = None,
-    max_retries: int = 3,
+    max_retries: int = 5,
 ) -> ImageResult:
 
     print("\n" + "=" * 80 + "\n")
@@ -205,6 +239,22 @@ def _generate_gemini(
         )
 
     client = genai.Client(api_key=api_key)
+    ...
+    # ---------------------------------------------------------
+    # Fallback model chain: try the configured model first, then
+    # fall forward if it keeps 500ing.
+    # ---------------------------------------------------------
+    fallback_models = [
+        config.models.gemini_image_model,
+        "gemini-2.5-flash-image",
+        "imagen-3.0-generate-002",
+    ]
+    seen = set()
+    fallback_models = [
+        m for m in fallback_models if not (m in seen or seen.add(m))
+    ]
+    model_idx = 0
+    consecutive_server_errors = 0
 
     # ---------------------------------------------------------
     # Reference images + prompt
@@ -212,6 +262,10 @@ def _generate_gemini(
     contents: list = []
 
     for ref_path in reference_image_paths or []:
+        img_bytes, mime = _load_and_downscale_image(ref_path)
+        contents.append(
+            types.Part.from_bytes(data=img_bytes, mime_type=mime)
+        )
         contents.append(
             types.Part.from_bytes(
                 data=Path(ref_path).read_bytes(),
@@ -225,7 +279,11 @@ def _generate_gemini(
     original_prompt = prompt
     current_prompt = prompt
     delay = 2
-
+    IMAGEN_MODELS = {
+        "imagen-3.0-generate-002",
+        "imagen-3.0-fast-generate-001",
+        "imagen-4.0-generate-001",
+    }
     BLOCKED_FINISH_REASONS = {
         "NO_IMAGE",
         "IMAGE_SAFETY",
@@ -243,11 +301,54 @@ def _generate_gemini(
         print(f"[Gemini] Attempt {attempt}/{max_retries}")
 
         try:
+            active_model = fallback_models[model_idx]
+
+            # ---- Imagen branch: different method, no reference images ----
+            if active_model in IMAGEN_MODELS:
+                if reference_image_paths:
+                    print(
+                        f"[Gemini] Note: {active_model!r} does not accept "
+                        f"reference images -- generating from text prompt "
+                        f"only. Character/scene consistency will be reduced "
+                        f"for this shot."
+                    )
+
+                img_response = client.models.generate_images(
+                    model=active_model,
+                    prompt=current_prompt,
+                    config=types.GenerateImagesConfig(
+                        number_of_images=1,
+                        output_mime_type="image/png",
+                    ),
+                )
+
+                if not img_response.generated_images:
+                    raise GenerationBlockedError(
+                        f"{active_model} returned no images.",
+                        reason_code="NO_IMAGE",
+                    )
+
+                return ImageResult(
+                    image_bytes=img_response.generated_images[0].image.image_bytes,
+                    mime_type="image/png",
+                )
+
+            # ---- Gemini branch (existing behavior) ----
             response = client.models.generate_content(
-                model=config.models.gemini_image_model,
+                model=active_model,
                 contents=contents + [current_prompt],
                 config=types.GenerateContentConfig(
-                    response_modalities=["IMAGE"]
+                    response_modalities=["IMAGE"],
+                    http_options=types.HttpOptions(
+                        retry_options=types.HttpRetryOptions(
+                            initial_delay=2.0,
+                            attempts=3,
+                            exp_base=2.0,
+                            max_delay=30.0,
+                            http_status_codes=[500, 502, 503, 504],
+                        ),
+                        timeout=120_000,
+                    ),
                 ),
             )
 
@@ -255,18 +356,32 @@ def _generate_gemini(
         # 1. TRANSIENT SERVER ERROR
         # =====================================================
         except ServerError as e:
+            consecutive_server_errors += 1
+
+            if (
+                consecutive_server_errors >= 2
+                and model_idx < len(fallback_models) - 1
+            ):
+                model_idx += 1
+                consecutive_server_errors = 0
+                delay = 2
+                print(
+                    f"[Gemini] Repeated server errors on {active_model!r}; "
+                    f"falling back to {fallback_models[model_idx]!r}."
+                )
 
             if attempt >= max_retries:
                 raise RuntimeError(
-                    f"Gemini server error after {max_retries} attempts: {e}"
+                    f"Gemini server error after {max_retries} attempts "
+                    f"across models {fallback_models[:model_idx + 1]}: {e}"
                 ) from e
 
+            jittered_delay = delay + random.uniform(0, delay * 0.3)
             print(
-                f"[Gemini] Server error. "
-                f"Retrying in {delay} seconds..."
+                f"[Gemini] Server error on {active_model!r}. "
+                f"Retrying in {jittered_delay:.1f}s..."
             )
-
-            time.sleep(delay)
+            time.sleep(jittered_delay)
             delay *= 2
             continue
 
