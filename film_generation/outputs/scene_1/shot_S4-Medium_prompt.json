@@ -1,7 +1,7 @@
 {
   "scene_number": 1,
   "shot_number": "S4-Medium",
-  "positive_prompt": "A medium shot of Kai using the binoculars, scanning the surroundings. He looks attentive and observant, occasionally nodding to Elena., medium shot, waist-up framing, tone: Tense and anticipatory, low-key lighting, hard shadows, desaturated palette, environment consistent with: EXT. MOUNTAIN FOREST TRAIL",
+  "positive_prompt": "A medium shot of Kai using the binoculars, scanning the surroundings. He looks attentive and observant, occasionally nodding to Elena., medium shot, waist-up framing, tone: Tense and anticipatory, low-key lighting, hard shadows, desaturated palette, environment consistent with: EXT. MOUNTAIN FOREST TRAIL, revision notes to address: The male character matches reference 3 well, and the female character matches reference 2 well. However, the visual objective called for a close-up of an old leather map with a flashlight beam illuminating details, which is missing from this composition. Instead, the characters are shown outdoors in a forest with binoculars and floating flashlight beams at the top corners. Adjust the framing to focus on the characters studying the map as requested.",
   "negative_prompt": "extra limbs, distorted hands, warped face, text artifacts, watermark, low resolution, inconsistent lighting",
   "character_ref_ids": [
     "ELENA",

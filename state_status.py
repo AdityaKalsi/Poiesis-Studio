@@ -157,16 +157,21 @@ else:
 
 print_section("VISUAL CRITIQUES")
 
-critiques = values.get("visual_critiques", [])
+critiques = values.get("visual_critiques", {})
 
-passed = [c for c in critiques if c.passes]
-failed = [c for c in critiques if not c.passes]
+if isinstance(critiques, dict):
+    critique_list = list(critiques.values())
+else:
+    critique_list = critiques
 
-print(f"Total  : {len(critiques)}")
+passed = [c for c in critique_list if c.passes]
+failed = [c for c in critique_list if not c.passes]
+
+print(f"Total  : {len(critique_list)}")
 print(f"Passed : {len(passed)}")
 print(f"Failed : {len(failed)}")
 
-for critique in critiques:
+for critique in critique_list:
     status = "✓ PASS" if critique.passes else "✗ FAIL"
 
     print(

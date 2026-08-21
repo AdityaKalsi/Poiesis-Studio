@@ -1,7 +1,7 @@
 {
   "scene_number": 1,
   "shot_number": "S5-Close-up",
-  "positive_prompt": "A close-up of Mira's face as she carries the lantern, looking confident and prepared. She smiles briefly at Elena, indicating camaraderie., close-up, tight emotional framing, tone: Tense and anticipatory, low-key lighting, hard shadows, desaturated palette, environment consistent with: EXT. MOUNTAIN FOREST TRAIL",
+  "positive_prompt": "A close-up of Mira's face as she carries the lantern, looking confident and prepared. She smiles briefly at Elena, indicating camaraderie., close-up, tight emotional framing, tone: Tense and anticipatory, low-key lighting, hard shadows, desaturated palette, environment consistent with: EXT. MOUNTAIN FOREST TRAIL, revision notes to address: The characters match their references well, but the image completely misses the core visual objective from the brief: there is no old leather map or flashlight beam being studied. Instead, it shows someone holding a lantern in a dark forest looking towards another character. The lighting and props must be corrected to show the characters intently studying a map under sunset/flashlight lighting.",
   "negative_prompt": "extra limbs, distorted hands, warped face, text artifacts, watermark, low resolution, inconsistent lighting",
   "character_ref_ids": [
     "ELENA",

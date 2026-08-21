@@ -233,7 +233,7 @@ def build_generation_graph(reasoning_state: ProjectState, config: GenerationConf
 
         critic_feedback = {
             f"{c.scene_number}-{c.shot_number}": c.feedback
-            for c in state.visual_critiques
+            for c in state.visual_critiques.values()
             if not c.passes
         }
         generation_failure_feedback = {
@@ -257,7 +257,7 @@ def build_generation_graph(reasoning_state: ProjectState, config: GenerationConf
         # mean at the generation-retry stage -- critique-passing is a later,
         # separate gate.
         generated_keys = {
-            f"{img.scene_number}-{img.shot_number}" for img in state.generated_images
+            f"{img.scene_number}-{img.shot_number}" for img in state.generated_images.values()
         }
 
         prompts = []
@@ -412,7 +412,7 @@ def build_generation_graph(reasoning_state: ProjectState, config: GenerationConf
                 "brief": brief_by_scene[image.scene_number],
                 "character_refs": state.character_refs,
             })
-            for image in state.generated_images
+            for image in state.generated_images.values()
         ]
 
     def node_critique_shot_image(payload: dict) -> dict:
@@ -430,13 +430,17 @@ def build_generation_graph(reasoning_state: ProjectState, config: GenerationConf
             raise RuntimeError(f"[Visual Critic] failed on shot {key}: {exc}") from exc
         print(f"[Visual Critic] {critique}")
         print("\n" + "=" * 80 + "\n")
-        return {"visual_critiques": [critique]}
+        # was returning a bare list -- visual_critiques is a merge_dicts-reduced
+        # dict like the other parallel-write fields, so it must be keyed the
+        # same way (this would TypeError on the reducer the first time a
+        # critique node actually ran).
+        return {"visual_critiques": {key: critique}}
 
     def node_join_critiques(state: GenerationState) -> dict:
         return {}
 
     def route_after_visual_critic(state: GenerationState):
-        any_failing = any(not c.passes for c in state.visual_critiques)
+        any_failing = any(not c.passes for c in state.visual_critiques.values())
         max_revision = max(state.shot_revision_counts.values(), default=0)
         if any_failing and max_revision < config.retries.max_shot_revisions:
             return "prompt_generation"
@@ -445,10 +449,16 @@ def build_generation_graph(reasoning_state: ProjectState, config: GenerationConf
     # -- image2video ------------------------------------------------------------
 
     def route_to_image2video(state: GenerationState):
-        passing_keys = {f"{c.scene_number}-{c.shot_number}" for c in state.visual_critiques if c.passes}
-        clips_by_key = {f"{c.scene_number}-{c.shot_number}": c for c in state.generated_clips}
+        passing_keys = {
+            f"{c.scene_number}-{c.shot_number}"
+            for c in state.visual_critiques.values() if c.passes
+        }
+        clips_by_key = {
+            f"{c.scene_number}-{c.shot_number}": c
+            for c in state.generated_clips.values()
+        }
         to_animate = []
-        for image in state.generated_images:
+        for image in state.generated_images.values():
             key = f"{image.scene_number}-{image.shot_number}"
             if key not in passing_keys or key in clips_by_key:
                 continue
@@ -469,6 +479,7 @@ def build_generation_graph(reasoning_state: ProjectState, config: GenerationConf
 
     def node_animate_shot(payload: dict) -> dict:
         image = payload["image"]
+        image_path = image.image_path
         key = f"{image.scene_number}-{image.shot_number}"
         cache_key = f"clip-{key}"
 
@@ -479,7 +490,7 @@ def build_generation_graph(reasoning_state: ProjectState, config: GenerationConf
 
         print(f"[Image2Video] Generating clip for shot {key}")
         try:
-            clip = i2v_module.animate(image=image, shot=payload["movement"], config=config, assets=assets)
+            clip = i2v_module.animate(image_path=image_path, shot=payload["movement"], config=config, assets=assets)
         except Exception as exc:
             raise RuntimeError(f"[Image2Video] failed on shot {key}: {exc}") from exc
         assets.save_cache(cache_key, clip.model_dump())
@@ -496,7 +507,9 @@ def build_generation_graph(reasoning_state: ProjectState, config: GenerationConf
             if scene_number in edls_by_scene:
                 continue
             clips_by_shot = {
-                c.shot_number: c for c in state.generated_clips if c.scene_number == scene_number
+                c.shot_number: c
+                for c in state.generated_clips.values()
+                if c.scene_number == scene_number
             }
             edl = cut_planner.plan_cuts(edited_sequence, clips_by_shot, fps=config.defaults.fps)
             edls_by_scene[scene_number] = edl
@@ -511,7 +524,9 @@ def build_generation_graph(reasoning_state: ProjectState, config: GenerationConf
         print(f"[Video Editing] Assembling {len(state.edit_decision_lists)} scenes into final movie")
         for edl in state.edit_decision_lists:
             clips_by_shot = {
-                c.shot_number: c for c in state.generated_clips if c.scene_number == edl.scene_number
+                c.shot_number: c
+                for c in state.generated_clips.values()
+                if c.scene_number == edl.scene_number
             }
             out_path = Path(config.output_dir) / f"scene_{edl.scene_number:03d}" / "assembled.mp4"
             video_editor.assemble_scene(edl, clips_by_shot, out_path)
@@ -587,6 +602,9 @@ def build_generation_graph(reasoning_state: ProjectState, config: GenerationConf
             ("film_generation.schemas", "EditDecisionList"),
             ("film_generation.schemas", "ShotGenerationFailure"),
             ('film_generation.schemas', 'EntityState'),
+
+            ("film_agents.schemas", "ScriptBreakdown"),
+            ("film_agents.schemas", "CriticReport"),
         ]
     )
     conn = sqlite3.connect(database="generation.db", check_same_thread=False)

@@ -42,28 +42,28 @@ def animate(
     print(f"Animating image with motion prompt: {motion_prompt}")
     _ensure_fal_key()
 
-    image_url = fal_client.upload_file(image_path)
+    image_url = fal_client.upload_file(str(image_path))
+
+    duration = duration_seconds or config.defaults.default_clip_seconds
 
     result = fal_client.subscribe(
         config.models.image2video_fal_model,
         arguments={
             "image_url": image_url,
             "prompt": motion_prompt,
-            "duration": duration_seconds or config.defaults.default_clip_seconds,
+            "duration": duration,
             "resolution": "720p",
         },
     )
 
-    # fal's response shape is {"video": {"url": "...", ...}, ...} for
-    # Wan endpoints -- verify against the live API response for the exact
-    # model version in use, this covers the common case.
     video_url = result.get("video", {}).get("url") or result.get("video_url")
+
     if not video_url:
         raise RuntimeError(f"fal.ai returned no video URL: {result!r}")
 
     return VideoResult(
         video_url=video_url,
-        duration_seconds=duration_seconds or config.defaults.default_clip_seconds,
+        duration_seconds=duration,
     )
 
 
