@@ -62,13 +62,19 @@ def plan_cuts(
     fps: int = 24,
 ) -> EditDecisionList:
     print(f"Planning cuts for scene {edited_sequence.scene_number} at {fps} fps...")
+
+    # edited_sequence.shot_order entries look like "S1-Wide (wide)" -- strip
+    # the trailing " (shot_type)" so we can match against clips_by_shot,
+    # which is keyed by the raw shot number (e.g. "S1-Wide").
+    shot_numbers = [s.split(" (")[0] for s in edited_sequence.shot_order]
+
     available_durations = "\n".join(
         f"- shot {shot_number}: {clips_by_shot[shot_number].duration_seconds:.1f}s available"
-        for shot_number in edited_sequence.shot_order
+        for shot_number in shot_numbers
         if shot_number in clips_by_shot
     )
     prompt = (
-        f"Shot order: {edited_sequence.shot_order}\n"
+        f"Shot order (use these exact shot_number values in your response): {shot_numbers}\n"
         f"Pacing notes: {edited_sequence.pacing_notes}\n"
         f"Transitions: {edited_sequence.transitions_in_out}\n\n"
         f"Available clip durations:\n{available_durations}\n"
@@ -83,11 +89,11 @@ def plan_cuts(
     cursor_frame = 0
     decision_by_shot = {d.shot_number: d for d in result.decisions}
     print(f"Cut planning decisions: {decision_by_shot}")
-    for shot_number in edited_sequence.shot_order:
+    for shot_number in shot_numbers:
         decision = decision_by_shot.get(shot_number)
         clip = clips_by_shot.get(shot_number)
         if decision is None or clip is None:
-            continue  # missing clip/decision -- caller should treat as incomplete plan
+            continue
 
         trim_seconds = min(decision.trim_to_seconds, clip.duration_seconds)
         frame_count = max(1, round(trim_seconds * fps))

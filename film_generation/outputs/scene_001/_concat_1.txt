@@ -1,0 +1,7 @@
+file 'C:/Users/Aditya kalsi/Desktop/film_agents/film_generation/outputs/scene_001/_trim_S1-Wide.mp4'
+file 'C:/Users/Aditya kalsi/Desktop/film_agents/film_generation/outputs/scene_001/_trim_S2-Medium.mp4'
+file 'C:/Users/Aditya kalsi/Desktop/film_agents/film_generation/outputs/scene_001/_trim_S3-Close-up.mp4'
+file 'C:/Users/Aditya kalsi/Desktop/film_agents/film_generation/outputs/scene_001/_trim_S4-Medium.mp4'
+file 'C:/Users/Aditya kalsi/Desktop/film_agents/film_generation/outputs/scene_001/_trim_S5-Close-up.mp4'
+file 'C:/Users/Aditya kalsi/Desktop/film_agents/film_generation/outputs/scene_001/_trim_S6-Close-up.mp4'
+file 'C:/Users/Aditya kalsi/Desktop/film_agents/film_generation/outputs/scene_001/_trim_S7-Cutaway.mp4'

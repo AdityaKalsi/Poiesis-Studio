@@ -29,6 +29,34 @@ def _ensure_fal_key() -> None:
     if not os.environ.get("FAL_KEY"):
         raise RuntimeError("FAL_KEY is not set -- required to call fal.ai's Wan 2.5 endpoint.")
 
+# Default camera behavior per shot type, used when Shot.movement hasn't been
+# generated yet (or is empty) upstream in the reasoning pipeline.
+_DEFAULT_MOVEMENT_BY_SHOT_TYPE = {
+    "wide": "slow, steady push-in, subtle parallax between foreground and background",
+    "medium": "gentle handheld sway, natural micro-movement, characters continue their action",
+    "close_up": "minimal drift, slow subtle zoom in, focus stays locked on the subject",
+    "cutaway": "mostly static frame, very slight handheld drift",
+}
+_FALLBACK_MOVEMENT = "slow, subtle camera drift, minimal motion"
+
+
+def build_motion_prompt(shot) -> str:
+    """Builds a motion-describing prompt for animate() when Shot.movement is
+    missing. Combines a shot_type-based default camera behavior with the
+    shot's description, since description carries the actual subject/action
+    detail that the raw shot_type alone doesn't."""
+    movement = getattr(shot, "movement", None)
+    if movement and movement.strip():
+        camera_behavior = movement.strip()
+    else:
+        camera_behavior = _DEFAULT_MOVEMENT_BY_SHOT_TYPE.get(
+            getattr(shot, "shot_type", None), _FALLBACK_MOVEMENT
+        )
+
+    description = (getattr(shot, "description", "") or "").strip()
+    if description:
+        return f"{description} Camera: {camera_behavior}."
+    return camera_behavior
 
 def animate(
     image_path: str,
@@ -36,22 +64,29 @@ def animate(
     config: GenerationConfig,
     duration_seconds: float | None = None,
 ) -> VideoResult:
-    """Uploads a local shot image to fal's storage, then calls Wan 2.5
-    image-to-video with a motion-describing prompt (built from Shot.movement
-    upstream in generation/image2video.py)."""
+    """..."""
     print(f"Animating image with motion prompt: {motion_prompt}")
     _ensure_fal_key()
 
+    if not motion_prompt or not motion_prompt.strip():
+        raise ValueError(
+            f"motion_prompt is empty for {image_path} -- check that Shot.movement "
+            "is populated upstream before calling animate()"
+        )
+
     image_url = fal_client.upload_file(str(image_path))
 
-    duration = duration_seconds or config.defaults.default_clip_seconds
+    requested_duration = duration_seconds or config.defaults.default_clip_seconds
+    # Wan 2.5 only accepts '5' or '10' seconds -- snap to the nearest allowed value.
+    allowed_durations = (5, 10)
+    duration = min(allowed_durations, key=lambda d: abs(d - requested_duration))
 
     result = fal_client.subscribe(
         config.models.image2video_fal_model,
         arguments={
             "image_url": image_url,
             "prompt": motion_prompt,
-            "duration": duration,
+            "duration": str(duration),   # API wants a string literal, not a float
             "resolution": "720p",
         },
     )
@@ -63,7 +98,7 @@ def animate(
 
     return VideoResult(
         video_url=video_url,
-        duration_seconds=duration,
+        duration_seconds=float(duration),  # keep the actually-used duration, not the requested one
     )
 
 

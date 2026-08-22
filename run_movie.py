@@ -44,23 +44,23 @@ def load_completed_reasoning_state() -> ProjectState:
     graph = build_reasoning_graph()
     thread_config = {"configurable": {"thread_id": REASONING_THREAD_ID}}
 
-    existing = graph.get_state(thread_config)
-    if existing is None or not existing.values:
+    existing_reasoning_graph = graph.get_state(thread_config)
+    if existing_reasoning_graph is None or not existing_reasoning_graph.values:
         sys.exit(
             f"No checkpoint found for thread_id={REASONING_THREAD_ID!r} in "
             f"reasoning.db -- run the reasoning pipeline first, or fix "
             f"REASONING_THREAD_ID above to match what run_movie.py used."
         )
-    if existing.next:
+    if existing_reasoning_graph.next:
         sys.exit(
             f"Checkpoint for {REASONING_THREAD_ID!r} is incomplete "
-            f"(pending nodes: {existing.next}) -- this test expects a "
+            f"(pending nodes: {existing_reasoning_graph.next}) -- this test expects a "
             f"fully finished reasoning run."
         )
 
     print(f"[Reasoning] loaded completed checkpoint for thread_id={REASONING_THREAD_ID!r} "
           f"(no LLM calls made)")
-    return ProjectState(**existing.values)
+    return ProjectState(**existing_reasoning_graph.values)
 
 def run_reasoning_stage(script_path: str) -> ProjectState:
 
@@ -70,7 +70,9 @@ def run_reasoning_stage(script_path: str) -> ProjectState:
 
     print(f"[1/2] Reasoning pipeline running on: {script_path}\n{'=' * 60}")
 
-    final_reasoning_state = reasoning_graph.invoke(ProjectState(script_text=script_text), config={
+    final_reasoning_state = reasoning_graph.invoke(
+        ProjectState(script_text=script_text), 
+        config={
         "configurable": {
             "thread_id": "REASONING_THREAD_ID"
         }
@@ -101,7 +103,7 @@ def run_generation_stage(project_state: ProjectState, resume: bool = False,
 
 def main() -> None:
     script_path = sys.argv[1] if len(sys.argv) > 1 else "sample_script.txt"
-    resume = "--resume" in sys.argv
+    #resume = "--resume" in sys.argv
 
     #final_resoning_state = run_reasoning_stage(script_path)
     final_resoning_state = load_completed_reasoning_state()
@@ -111,8 +113,8 @@ def main() -> None:
               "stopping before generation (nothing to generate from).")
         sys.exit(1)
 
-    final_gen_state = run_generation_stage(final_resoning_state, resume=resume)
-    #final_gen_state = run_generation_stage(final_resoning_state)
+    #final_gen_state = run_generation_stage(final_resoning_state, resume=resume)
+    final_gen_state = run_generation_stage(final_resoning_state)
 
     # Write the complete generation stage state to a JSON file
     gen_out_path = Path("generation_output.json")

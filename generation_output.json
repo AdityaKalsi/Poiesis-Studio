@@ -1,0 +1,454 @@
+{
+  "project_title": "Script Breakdown",
+  "character_refs": {
+    "ELENA": {
+      "character_name": "ELENA",
+      "description": "Olive green waterproof utility jacket, dark charcoal crewneck t-shirt, fitted navy blue cargo jeans, dark brown leather hiking boots",
+      "reference_image_path": "film_generation\\outputs\\characters\\ELENA.png",
+      "identity_payload_path": "film_generation\\outputs\\characters\\ELENA.png",
+      "identity_payload_kind": "image",
+      "seed": null,
+      "approved": false
+    },
+    "KAI": {
+      "character_name": "KAI",
+      "description": "Weathered dark brown canvas jacket, faded heather-gray t-shirt, rugged dark-wash indigo jeans, heavy slate-gray work boots",
+      "reference_image_path": "film_generation\\outputs\\characters\\KAI.png",
+      "identity_payload_path": "film_generation\\outputs\\characters\\KAI.png",
+      "identity_payload_kind": "image",
+      "seed": null,
+      "approved": false
+    },
+    "MIRA": {
+      "character_name": "MIRA",
+      "description": "Mustard yellow knit zip jacket, plain white crewneck t-shirt, distressed light-wash blue jeans, tan suede trail boots",
+      "reference_image_path": "film_generation\\outputs\\characters\\MIRA.png",
+      "identity_payload_path": "film_generation\\outputs\\characters\\MIRA.png",
+      "identity_payload_kind": "image",
+      "seed": null,
+      "approved": false
+    }
+  },
+  "scene_anchors": {
+    "1": {
+      "scene_number": 1,
+      "environment_image_path": "film_generation\\outputs\\scene_anchor\\scene_001\\anchor.png",
+      "layout_description": "EXT. MOUNTAIN FOREST TRAIL",
+      "lighting_description": "A close-up of the old leather map with a flashlight beam illuminating the details, showing the characters intently studying it against the warm, golden light of sunset.",
+      "seed": null,
+      "approved": false
+    }
+  },
+  "generated_images": {
+    "1-S1-Wide": {
+      "scene_number": 1,
+      "shot_number": "S1-Wide",
+      "image_path": "film_generation\\outputs\\scene_001\\shot_image_S1-Wide_d3751999b77f50fa.png",
+      "prompt_used": {
+        "scene_number": 1,
+        "shot_number": "S1-Wide",
+        "positive_prompt": "A wide shot of the forest trail at sunset, with the characters moving along the path. The golden light of the setting sun illuminates the forest, creating a warm, anticipatory atmosphere. This shot establishes the setting and the characters' journey., wide shot, full scene geography visible, tone: Tense and anticipatory, low-key lighting, hard shadows, desaturated palette, environment consistent with: EXT. MOUNTAIN FOREST TRAIL, revision notes to address: The character identities and outfits match the reference sheets very well, but the visual objective specified in the brief was completely missed. The brief called for a close-up on an old leather map illuminated by a flashlight beam with characters studying it, whereas the generated image is a wide-angle hiking shot. Additionally, the tone feels more serene/scenic rather than tense and anticipatory.",
+        "negative_prompt": "extra limbs, distorted hands, warped face, text artifacts, watermark, low resolution, inconsistent lighting",
+        "character_ref_ids": [
+          "ELENA",
+          "KAI",
+          "MIRA"
+        ],
+        "scene_anchor_id": 1,
+        "seed": null
+      },
+      "model_backend": "gemini",
+      "seed": 599626885,
+      "cache_key": "d3751999b77f50fa"
+    },
+    "1-S2-Medium": {
+      "scene_number": 1,
+      "shot_number": "S2-Medium",
+      "image_path": "film_generation\\outputs\\scene_001\\shot_image_S2-Medium_f1e4b8652aca49da.png",
+      "prompt_used": {
+        "scene_number": 1,
+        "shot_number": "S2-Medium",
+        "positive_prompt": "A medium shot of Elena, Kai, and Mira walking together, with Elena leading the group. She is holding a map, and Kai is using binoculars to scan the surroundings. Mira is carrying the backpack with the lantern., medium shot, waist-up framing, tone: Tense and anticipatory, low-key lighting, hard shadows, desaturated palette, environment consistent with: EXT. MOUNTAIN FOREST TRAIL",
+        "negative_prompt": "extra limbs, distorted hands, warped face, text artifacts, watermark, low resolution, inconsistent lighting",
+        "character_ref_ids": [
+          "ELENA",
+          "KAI",
+          "MIRA"
+        ],
+        "scene_anchor_id": 1,
+        "seed": null
+      },
+      "model_backend": "gemini",
+      "seed": 1607230804,
+      "cache_key": "f1e4b8652aca49da"
+    },
+    "1-S3-Close-up": {
+      "scene_number": 1,
+      "shot_number": "S3-Close-up",
+      "image_path": "film_generation\\outputs\\scene_001\\shot_image_S3-Close-up_8103f66397ca1956.png",
+      "prompt_used": {
+        "scene_number": 1,
+        "shot_number": "S3-Close-up",
+        "positive_prompt": "A close-up of Elena's face as she intently studies the map, her flashlight beam illuminating the details. She looks determined and focused., close-up, tight emotional framing, tone: Tense and anticipatory, low-key lighting, hard shadows, desaturated palette, environment consistent with: EXT. MOUNTAIN FOREST TRAIL",
+        "negative_prompt": "extra limbs, distorted hands, warped face, text artifacts, watermark, low resolution, inconsistent lighting",
+        "character_ref_ids": [
+          "ELENA",
+          "KAI",
+          "MIRA"
+        ],
+        "scene_anchor_id": 1,
+        "seed": null
+      },
+      "model_backend": "gemini",
+      "seed": 1808153363,
+      "cache_key": "8103f66397ca1956"
+    },
+    "1-S4-Medium": {
+      "scene_number": 1,
+      "shot_number": "S4-Medium",
+      "image_path": "film_generation\\outputs\\scene_001\\shot_image_S4-Medium_a24d603def67c5c7.png",
+      "prompt_used": {
+        "scene_number": 1,
+        "shot_number": "S4-Medium",
+        "positive_prompt": "A medium shot of Kai using the binoculars, scanning the surroundings. He looks attentive and observant, occasionally nodding to Elena., medium shot, waist-up framing, tone: Tense and anticipatory, low-key lighting, hard shadows, desaturated palette, environment consistent with: EXT. MOUNTAIN FOREST TRAIL, revision notes to address: The male character matches reference 3 well, and the female character matches reference 2 well. However, the visual objective called for a close-up of an old leather map with a flashlight beam illuminating details, which is missing from this composition. Instead, the characters are shown outdoors in a forest with binoculars and floating flashlight beams at the top corners. Adjust the framing to focus on the characters studying the map as requested.",
+        "negative_prompt": "extra limbs, distorted hands, warped face, text artifacts, watermark, low resolution, inconsistent lighting",
+        "character_ref_ids": [
+          "ELENA",
+          "KAI",
+          "MIRA"
+        ],
+        "scene_anchor_id": 1,
+        "seed": null
+      },
+      "model_backend": "gemini",
+      "seed": 1596602958,
+      "cache_key": "a24d603def67c5c7"
+    },
+    "1-S5-Close-up": {
+      "scene_number": 1,
+      "shot_number": "S5-Close-up",
+      "image_path": "film_generation\\outputs\\scene_001\\shot_image_S5-Close-up_25b86d3c0592e253.png",
+      "prompt_used": {
+        "scene_number": 1,
+        "shot_number": "S5-Close-up",
+        "positive_prompt": "A close-up of Mira's face as she carries the lantern, looking confident and prepared. She smiles briefly at Elena, indicating camaraderie., close-up, tight emotional framing, tone: Tense and anticipatory, low-key lighting, hard shadows, desaturated palette, environment consistent with: EXT. MOUNTAIN FOREST TRAIL, revision notes to address: The characters match their references well, but the image completely misses the core visual objective from the brief: there is no old leather map or flashlight beam being studied. Instead, it shows someone holding a lantern in a dark forest looking towards another character. The lighting and props must be corrected to show the characters intently studying a map under sunset/flashlight lighting.",
+        "negative_prompt": "extra limbs, distorted hands, warped face, text artifacts, watermark, low resolution, inconsistent lighting",
+        "character_ref_ids": [
+          "ELENA",
+          "KAI",
+          "MIRA"
+        ],
+        "scene_anchor_id": 1,
+        "seed": null
+      },
+      "model_backend": "gemini",
+      "seed": 90503049,
+      "cache_key": "25b86d3c0592e253"
+    },
+    "1-S6-Close-up": {
+      "scene_number": 1,
+      "shot_number": "S6-Close-up",
+      "image_path": "film_generation\\outputs\\scene_001\\shot_image_S6-Close-up_dd14427b30ec2589.png",
+      "prompt_used": {
+        "scene_number": 1,
+        "shot_number": "S6-Close-up",
+        "positive_prompt": "A close-up of the old leather map with a flashlight beam illuminating the details, showing the characters intently studying it against the warm, golden light of sunset., close-up, tight emotional framing, tone: Tense and anticipatory, low-key lighting, hard shadows, desaturated palette, environment consistent with: EXT. MOUNTAIN FOREST TRAIL",
+        "negative_prompt": "extra limbs, distorted hands, warped face, text artifacts, watermark, low resolution, inconsistent lighting",
+        "character_ref_ids": [
+          "ELENA",
+          "KAI",
+          "MIRA"
+        ],
+        "scene_anchor_id": 1,
+        "seed": null
+      },
+      "model_backend": "gemini",
+      "seed": 1427071018,
+      "cache_key": "dd14427b30ec2589"
+    },
+    "1-S7-Cutaway": {
+      "scene_number": 1,
+      "shot_number": "S7-Cutaway",
+      "image_path": "film_generation\\outputs\\scene_001\\shot_image_S7-Cutaway_e99741500e5a3a88.png",
+      "prompt_used": {
+        "scene_number": 1,
+        "shot_number": "S7-Cutaway",
+        "positive_prompt": "A cutaway shot of the group walking together, with a brief reaction from Mira, who looks back at Elena with a reassuring smile. This shot reinforces their camaraderie and shared purpose., cutaway shot, reaction framing, tone: Tense and anticipatory, low-key lighting, hard shadows, desaturated palette, environment consistent with: EXT. MOUNTAIN FOREST TRAIL, revision notes to address: The character identities and outfits match the reference images well, and the golden hour lighting in the forest looks great. However, the shot fails to meet the specific visual objective: there is no close-up of an old leather map being illuminated by a flashlight beam with characters intently studying it. Instead, it is a wide walking shot where a map is barely visible in the background and one character is looking away with a flashlight. Reroll the shot to focus tightly on the map and flashlight interaction to capture the tense and anticipatory mood.",
+        "negative_prompt": "extra limbs, distorted hands, warped face, text artifacts, watermark, low resolution, inconsistent lighting",
+        "character_ref_ids": [
+          "ELENA",
+          "KAI",
+          "MIRA"
+        ],
+        "scene_anchor_id": 1,
+        "seed": null
+      },
+      "model_backend": "gemini",
+      "seed": 1287608988,
+      "cache_key": "e99741500e5a3a88"
+    }
+  },
+  "shot_generation_failures": {},
+  "visual_critiques": {
+    "1-S1-Wide": {
+      "scene_number": 1,
+      "shot_number": "S1-Wide",
+      "score": 10,
+      "identity_similarity": 0.98,
+      "passes": true,
+      "feedback": "The generated image perfectly captures the director's intent, showcasing strong character identity consistency across all three individuals compared to the reference sheets. The lighting, composition, and tense, anticipatory expressions successfully evoke camaraderie and shared purpose under the golden sunset."
+    },
+    "1-S2-Medium": {
+      "scene_number": 1,
+      "shot_number": "S2-Medium",
+      "score": 10,
+      "identity_similarity": 0.98,
+      "passes": true,
+      "feedback": "The generated shot successfully meets all criteria of the director's intent. All three characters closely match their respective reference images in terms of facial features and wardrobe. The composition effectively captures the tense and anticipatory tone, showcasing the central map reading with excellent lighting detail under golden hour sunset forest ambience."
+    },
+    "1-S3-Close-up": {
+      "scene_number": 1,
+      "shot_number": "S3-Close-up",
+      "score": 9,
+      "identity_similarity": 0.95,
+      "passes": true,
+      "feedback": "The character in the shot accurately matches the female reference image provided in facial features and hair. The lighting, close-up framing on the old leather map, flashlight beam, and tense/anticipatory mood fulfill the visual objectives very well."
+    },
+    "1-S4-Medium": {
+      "scene_number": 1,
+      "shot_number": "S4-Medium",
+      "score": 9,
+      "identity_similarity": 0.95,
+      "passes": true,
+      "feedback": "The generated image successfully captures the tense and anticipatory mood, with excellent lighting focused on the map from the flashlight. The male character matches his reference well (Image 3). However, the female character in the generated shot (Image 1) appears closer to the character model in Image 2 (short brown hair) rather than the curly hair and facial structure of the character in Image 4, though the outfit corresponds correctly to Image 2."
+    },
+    "1-S5-Close-up": {
+      "scene_number": 1,
+      "shot_number": "S5-Close-up",
+      "score": 9,
+      "identity_similarity": 0.95,
+      "passes": true,
+      "feedback": "The primary character strongly matches reference 2 with consistent facial features and hairstyle, and the costume (green jacket) matches. The shot successfully captures the tense, anticipatory tone, the golden hour sunset lighting, and the detailed map illuminated by a flashlight and lantern."
+    },
+    "1-S6-Close-up": {
+      "scene_number": 1,
+      "shot_number": "S6-Close-up",
+      "score": 10,
+      "identity_similarity": 0.95,
+      "passes": true,
+      "feedback": "The generated shot successfully hits every point in the director's intent brief. The characters closely match the provided reference images, the composition perfectly highlights the glowing old leather map with the flashlight beam, and the golden sunset lighting reinforces the tense, anticipatory tone and camaraderie among the group."
+    },
+    "1-S7-Cutaway": {
+      "scene_number": 1,
+      "shot_number": "S7-Cutaway",
+      "score": 10,
+      "identity_similarity": 0.95,
+      "passes": true,
+      "feedback": "The generated shot excellently captures the visual and emotional objectives, showing the characters gathered around the worn leather map illuminated by a flashlight and warm sunset lighting. The jacket and sweater sleeves perfectly match the provided character reference images for identity and wardrobe."
+    }
+  },
+  "generated_clips": {
+    "1-S1-Wide": {
+      "scene_number": 1,
+      "shot_number": "S1-Wide",
+      "video_path": "film_generation\\outputs\\scene_001\\shot_S1-Wide.mp4",
+      "source_image_path": "film_generation\\outputs\\scene_001\\shot_image_S1-Wide_d3751999b77f50fa.png",
+      "duration_seconds": 5.0,
+      "model_backend": "fal-ai/wan-25-preview/image-to-video"
+    },
+    "1-S2-Medium": {
+      "scene_number": 1,
+      "shot_number": "S2-Medium",
+      "video_path": "film_generation\\outputs\\scene_001\\shot_S2-Medium.mp4",
+      "source_image_path": "film_generation\\outputs\\scene_001\\shot_image_S2-Medium_f1e4b8652aca49da.png",
+      "duration_seconds": 5.0,
+      "model_backend": "fal-ai/wan-25-preview/image-to-video"
+    },
+    "1-S3-Close-up": {
+      "scene_number": 1,
+      "shot_number": "S3-Close-up",
+      "video_path": "film_generation\\outputs\\scene_001\\shot_S3-Close-up.mp4",
+      "source_image_path": "film_generation\\outputs\\scene_001\\shot_image_S3-Close-up_8103f66397ca1956.png",
+      "duration_seconds": 5.0,
+      "model_backend": "fal-ai/wan-25-preview/image-to-video"
+    },
+    "1-S4-Medium": {
+      "scene_number": 1,
+      "shot_number": "S4-Medium",
+      "video_path": "film_generation\\outputs\\scene_001\\shot_S4-Medium.mp4",
+      "source_image_path": "film_generation\\outputs\\scene_001\\shot_image_S4-Medium_a24d603def67c5c7.png",
+      "duration_seconds": 5.0,
+      "model_backend": "fal-ai/wan-25-preview/image-to-video"
+    },
+    "1-S5-Close-up": {
+      "scene_number": 1,
+      "shot_number": "S5-Close-up",
+      "video_path": "film_generation\\outputs\\scene_001\\shot_S5-Close-up.mp4",
+      "source_image_path": "film_generation\\outputs\\scene_001\\shot_image_S5-Close-up_25b86d3c0592e253.png",
+      "duration_seconds": 5.0,
+      "model_backend": "fal-ai/wan-25-preview/image-to-video"
+    },
+    "1-S6-Close-up": {
+      "scene_number": 1,
+      "shot_number": "S6-Close-up",
+      "video_path": "film_generation\\outputs\\scene_001\\shot_S6-Close-up.mp4",
+      "source_image_path": "film_generation\\outputs\\scene_001\\shot_image_S6-Close-up_dd14427b30ec2589.png",
+      "duration_seconds": 5.0,
+      "model_backend": "fal-ai/wan-25-preview/image-to-video"
+    },
+    "1-S7-Cutaway": {
+      "scene_number": 1,
+      "shot_number": "S7-Cutaway",
+      "video_path": "film_generation\\outputs\\scene_001\\shot_S7-Cutaway.mp4",
+      "source_image_path": "film_generation\\outputs\\scene_001\\shot_image_S7-Cutaway_e99741500e5a3a88.png",
+      "duration_seconds": 5.0,
+      "model_backend": "fal-ai/wan-25-preview/image-to-video"
+    }
+  },
+  "generation_call_count": 11,
+  "shot_prompts": [],
+  "edit_decision_lists": [
+    {
+      "scene_number": 1,
+      "fps": 24,
+      "decisions": [
+        {
+          "shot_number": "S1-Wide",
+          "start_frame": 0,
+          "end_frame": 108,
+          "transition_in": {
+            "transitons": "cut"
+          },
+          "transition_duration_frames": 0
+        },
+        {
+          "shot_number": "S2-Medium",
+          "start_frame": 108,
+          "end_frame": 204,
+          "transition_in": {
+            "transitons": "cut"
+          },
+          "transition_duration_frames": 0
+        },
+        {
+          "shot_number": "S3-Close-up",
+          "start_frame": 204,
+          "end_frame": 288,
+          "transition_in": {
+            "transitons": "cut"
+          },
+          "transition_duration_frames": 0
+        },
+        {
+          "shot_number": "S4-Medium",
+          "start_frame": 288,
+          "end_frame": 360,
+          "transition_in": {
+            "transitons": "cut"
+          },
+          "transition_duration_frames": 0
+        },
+        {
+          "shot_number": "S5-Close-up",
+          "start_frame": 360,
+          "end_frame": 420,
+          "transition_in": {
+            "transitons": "cut"
+          },
+          "transition_duration_frames": 0
+        },
+        {
+          "shot_number": "S6-Close-up",
+          "start_frame": 420,
+          "end_frame": 468,
+          "transition_in": {
+            "transitons": "cut"
+          },
+          "transition_duration_frames": 0
+        },
+        {
+          "shot_number": "S7-Cutaway",
+          "start_frame": 468,
+          "end_frame": 504,
+          "transition_in": {
+            "transitons": "fade_to_black"
+          },
+          "transition_duration_frames": 5
+        }
+      ]
+    }
+  ],
+  "shot_revision_counts": {},
+  "final_movie_path": "film_generation\\outputs\\Script_Breakdown_final.mp4",
+  "log": [
+    "[Adapter] seeded continuity with 3 characters, 4 props from reasoning output",
+    "[Prompt Generation] 0 prompts (re)built",
+    "[Cut Planning] 1 scene EDLs built",
+    "[Video Editing] final movie written to film_generation\\outputs\\Script_Breakdown_final.mp4"
+  ],
+  "continuity": {
+    "ELENA": {
+      "entity_name": "ELENA",
+      "entity_type": "character",
+      "wardrobe": null,
+      "condition": null,
+      "last_seen_scene": null,
+      "last_seen_location": null,
+      "notes": []
+    },
+    "KAI": {
+      "entity_name": "KAI",
+      "entity_type": "character",
+      "wardrobe": null,
+      "condition": null,
+      "last_seen_scene": null,
+      "last_seen_location": null,
+      "notes": []
+    },
+    "MIRA": {
+      "entity_name": "MIRA",
+      "entity_type": "character",
+      "wardrobe": null,
+      "condition": null,
+      "last_seen_scene": null,
+      "last_seen_location": null,
+      "notes": []
+    },
+    "old leather map": {
+      "entity_name": "old leather map",
+      "entity_type": "prop",
+      "wardrobe": null,
+      "condition": null,
+      "last_seen_scene": null,
+      "last_seen_location": null,
+      "notes": []
+    },
+    "pair of binoculars": {
+      "entity_name": "pair of binoculars",
+      "entity_type": "prop",
+      "wardrobe": null,
+      "condition": null,
+      "last_seen_scene": null,
+      "last_seen_location": null,
+      "notes": []
+    },
+    "weathered backpack": {
+      "entity_name": "weathered backpack",
+      "entity_type": "prop",
+      "wardrobe": null,
+      "condition": null,
+      "last_seen_scene": null,
+      "last_seen_location": null,
+      "notes": []
+    },
+    "lantern": {
+      "entity_name": "lantern",
+      "entity_type": "prop",
+      "wardrobe": null,
+      "condition": null,
+      "last_seen_scene": null,
+      "last_seen_location": null,
+      "notes": []
+    }
+  }
+}

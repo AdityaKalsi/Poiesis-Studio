@@ -55,6 +55,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from click import prompt
+from langgraph import graph
 from langgraph.graph import StateGraph, START, END
 from langgraph.types import Send
 from film_generation.models.text2image import GenerationBlockedError
@@ -79,7 +80,7 @@ from film_generation.generation.continuity_manager import ContinuityManager
 import sqlite3
 from langgraph.checkpoint.sqlite import SqliteSaver
 from langgraph.checkpoint.serde.jsonplus import JsonPlusSerializer
-from film_generation.schemas import GenerationState, ShotGenerationFailure, CharacterReference, SceneAnchor, GeneratedImage, GeneratedClip
+from film_generation.schemas import GenerationState, ShotGenerationFailure, CharacterReference, SceneAnchor, GeneratedImage, GeneratedClip, VisualCritique
 
 
 def _cache_lookup(assets: AssetManager, cache_key: str):
@@ -112,6 +113,8 @@ def get_character_description(scene, character_name: str) -> str:
             return description.strip()
 
     return "No specific character description available."
+
+
 
 def build_generation_graph(reasoning_state: ProjectState, config: GenerationConfig):
 
@@ -418,6 +421,13 @@ def build_generation_graph(reasoning_state: ProjectState, config: GenerationConf
     def node_critique_shot_image(payload: dict) -> dict:
         image = payload["image"]
         key = f"{image.scene_number}-{image.shot_number}"
+        cache_key = f"critique-{key}"
+
+        cached = _cache_lookup(assets, cache_key)
+        if cached is not None:
+            print(f"[Visual Critic] Cache hit for shot {key}, skipping re-critique")
+            return {"visual_critiques": {key: VisualCritique(**cached)}}
+
         print(f"[Visual Critic] Critiquing shot {key}")
         try:
             critique = critic_module.critique_shot_image(
@@ -429,11 +439,8 @@ def build_generation_graph(reasoning_state: ProjectState, config: GenerationConf
         except Exception as exc:
             raise RuntimeError(f"[Visual Critic] failed on shot {key}: {exc}") from exc
         print(f"[Visual Critic] {critique}")
+        assets.save_cache(cache_key, critique.model_dump())
         print("\n" + "=" * 80 + "\n")
-        # was returning a bare list -- visual_critiques is a merge_dicts-reduced
-        # dict like the other parallel-write fields, so it must be keyed the
-        # same way (this would TypeError on the reducer the first time a
-        # critique node actually ran).
         return {"visual_critiques": {key: critique}}
 
     def node_join_critiques(state: GenerationState) -> dict:
@@ -473,9 +480,11 @@ def build_generation_graph(reasoning_state: ProjectState, config: GenerationConf
             return "cut_planning"  # nothing to do, skip straight through
 
         return [
-            Send("animate_shot", {"image": image, "movement": shot.movement})
+            Send("animate_shot", {"image": image, "movement": i2v_module.build_motion_prompt(shot)})
             for image, shot in to_animate
         ]
+
+   
 
     def node_animate_shot(payload: dict) -> dict:
         image = payload["image"]
@@ -490,12 +499,30 @@ def build_generation_graph(reasoning_state: ProjectState, config: GenerationConf
 
         print(f"[Image2Video] Generating clip for shot {key}")
         try:
-            clip = i2v_module.animate(image_path=image_path, shot=payload["movement"], config=config, assets=assets)
+            video_result = i2v_module.animate(
+                image_path=image_path,
+                motion_prompt=payload["movement"],
+                config=config,
+            )
+            dest_path = Path(config.output_dir) / f"scene_{image.scene_number:03d}" / f"shot_{image.shot_number}.mp4"
+            i2v_module.download(video_result, dest_path)
         except Exception as exc:
             raise RuntimeError(f"[Image2Video] failed on shot {key}: {exc}") from exc
+
+        clip = GeneratedClip(
+            scene_number=image.scene_number,
+            shot_number=image.shot_number,
+            video_path=str(video_result.local_path),
+            source_image_path=image_path,
+            duration_seconds=video_result.duration_seconds,
+            model_backend=config.models.image2video_fal_model,
+        )
         assets.save_cache(cache_key, clip.model_dump())
         print("\n" + "=" * 80 + "\n")
         return {"generated_clips": {key: clip}}
+
+    def node_join_clips(state: GenerationState) -> dict:
+        return {}
 
     # -- cut planning / video editing (batch -- run once each) --------------
 
@@ -552,6 +579,7 @@ def build_generation_graph(reasoning_state: ProjectState, config: GenerationConf
     graph.add_node("critique_shot_image", node_critique_shot_image)
     graph.add_node("join_critiques", node_join_critiques)
     graph.add_node("animate_shot", node_animate_shot)
+    graph.add_node("join_clips", node_join_clips)
     graph.add_node("cut_planning", node_cut_planning)
     graph.add_node("video_editing", node_video_editing)
 
@@ -586,7 +614,8 @@ def build_generation_graph(reasoning_state: ProjectState, config: GenerationConf
         ["prompt_generation", "animate_shot", "cut_planning"],
     )
 
-    graph.add_edge("animate_shot", "cut_planning")
+    graph.add_edge("animate_shot", "join_clips")
+    graph.add_edge("join_clips", "cut_planning")
     graph.add_edge("cut_planning", "video_editing")
     graph.add_edge("video_editing", END)
 
